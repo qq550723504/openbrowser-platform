@@ -1,4 +1,4 @@
-﻿import { useState } from 'react'
+﻿import { useEffect, useRef, useState } from 'react'
 import { toast } from '../../../shared/components'
 import type { BrowserProfile, BrowserProfileCopyOptions, BrowserProfilePackageImportAction, BrowserProfilePackageImportPreview, BrowserProxy } from '../types'
 import { BrowserCoreEditorModal, BrowserListHeader, BrowserListSettingsModal } from '../components/BrowserListLayout'
@@ -46,6 +46,34 @@ export function BrowserListPage() {
   const [batchLoading, setBatchLoading] = useState(false)
   const [profilePackageBusy, setProfilePackageBusy] = useState(false)
   const [profileImportPreview, setProfileImportPreview] = useState<BrowserProfilePackageImportPreview | null>(null)
+  const profilePackageRequest = useRef<symbol | null>(null)
+  const currentImportPreview = useRef<BrowserProfilePackageImportPreview | null>(null)
+
+  useEffect(() => () => {
+    profilePackageRequest.current = null
+    currentImportPreview.current = null
+  }, [])
+
+  // State renders busy controls; the ref also fences callbacks before React rerenders.
+  const beginProfilePackageRequest = () => {
+    if (profilePackageRequest.current) return null
+    const request = Symbol()
+    profilePackageRequest.current = request
+    setProfilePackageBusy(true)
+    return request
+  }
+
+  const finishProfilePackageRequest = (request: symbol) => {
+    if (profilePackageRequest.current !== request) return
+    profilePackageRequest.current = null
+    setProfilePackageBusy(false)
+  }
+
+  const updateImportPreview = (preview: BrowserProfilePackageImportPreview | null) => {
+    currentImportPreview.current = preview
+    setProfileImportPreview(preview)
+  }
+
   const [deleteConfirm, setDeleteConfirm] = useState<{
     open: boolean
     mode: 'single' | 'batch'
@@ -302,7 +330,7 @@ export function BrowserListPage() {
 
   const handleBatchExport = async () => {
     const ids = Array.from(selectedIds)
-    if (ids.length === 0 || profilePackageBusy) return
+    if (ids.length === 0 || profilePackageRequest.current) return
     const runningNames = profiles
       .filter(profile => ids.includes(profile.profileId) && profile.running)
       .map(profile => profile.profileName)
@@ -310,33 +338,37 @@ export function BrowserListPage() {
       toast.error(`请先停止实例再导出：${runningNames.slice(0, 3).join('、')}${runningNames.length > 3 ? ' 等' : ''}`)
       return
     }
-    setProfilePackageBusy(true)
+    const request = beginProfilePackageRequest()
+    if (!request) return
     try {
       const result = await exportBrowserProfilePackage(ids)
+      if (profilePackageRequest.current !== request) return
       if (result.cancelled) return
       toast.success(`已导出 ${result.profileCount} 个实例`)
     } catch (error: any) {
-      toast.error(error?.message || '导出实例失败')
+      if (profilePackageRequest.current === request) toast.error(error?.message || '导出实例失败')
     } finally {
-      setProfilePackageBusy(false)
+      finishProfilePackageRequest(request)
     }
   }
 
   const handleExportProfile = async (profile: BrowserProfile) => {
-    if (profilePackageBusy) return
+    if (profilePackageRequest.current) return
     if (profile.running) {
       toast.error(`请先停止实例再导出：${profile.profileName}`)
       return
     }
-    setProfilePackageBusy(true)
+    const request = beginProfilePackageRequest()
+    if (!request) return
     try {
       const result = await exportBrowserProfilePackage([profile.profileId])
+      if (profilePackageRequest.current !== request) return
       if (result.cancelled) return
       toast.success(`已导出：${profile.profileName}`)
     } catch (error: any) {
-      toast.error(error?.message || '导出实例失败')
+      if (profilePackageRequest.current === request) toast.error(error?.message || '导出实例失败')
     } finally {
-      setProfilePackageBusy(false)
+      finishProfilePackageRequest(request)
     }
   }
 
@@ -355,15 +387,18 @@ export function BrowserListPage() {
     }
   }
 
-  const executeProfileImport = async (zipPath: string, actions: BrowserProfilePackageImportAction[], confirmConflict = false) => {
-    if (!zipPath.trim()) {
-      setProfileImportPreview(null)
-      setProfilePackageBusy(false)
+  const executeProfileImport = async (preview: BrowserProfilePackageImportPreview, actions: BrowserProfilePackageImportAction[], confirmConflict = false) => {
+    if (currentImportPreview.current !== preview || profilePackageRequest.current) return
+    if (!preview.zipPath.trim()) {
+      updateImportPreview(null)
       return
     }
-    setProfileImportPreview(null)
+    const request = beginProfilePackageRequest()
+    if (!request) return
+    updateImportPreview(null)
     try {
-      const result = await importBrowserProfilePackageWithOptions(zipPath, 'new', confirmConflict, actions)
+      const result = await importBrowserProfilePackageWithOptions(preview.zipPath, 'new', confirmConflict, actions)
+      if (profilePackageRequest.current !== request) return
       if (result.cancelled) return
       const warnings = result.warnings || []
       const createdCount = result.createdCount ?? Math.max(0, result.importedCount - (result.overwrittenCount || 0))
@@ -378,26 +413,24 @@ export function BrowserListPage() {
       setSelectedIds(new Set())
       await loadProfiles()
     } catch (error: any) {
-      toast.error(error?.message || '导入实例失败')
+      if (profilePackageRequest.current === request) toast.error(error?.message || '导入实例失败')
     } finally {
-      setProfilePackageBusy(false)
+      finishProfilePackageRequest(request)
     }
   }
 
   const handleImportProfiles = async () => {
-    if (profilePackageBusy) return
-    setProfilePackageBusy(true)
+    const request = beginProfilePackageRequest()
+    if (!request) return
+    updateImportPreview(null)
     try {
       const preview = await prepareBrowserProfilePackageImport()
-      if (preview.cancelled) {
-        setProfilePackageBusy(false)
-        return
-      }
-      setProfileImportPreview(preview)
-      return
+      if (profilePackageRequest.current !== request || preview.cancelled) return
+      updateImportPreview(preview)
     } catch (error: any) {
-      toast.error(error?.message || '导入实例失败')
-      setProfilePackageBusy(false)
+      if (profilePackageRequest.current === request) toast.error(error?.message || '导入实例失败')
+    } finally {
+      finishProfilePackageRequest(request)
     }
   }
 
@@ -715,12 +748,12 @@ export function BrowserListPage() {
         profileImportPreview={profileImportPreview}
         profileImportBusy={profilePackageBusy}
         onCloseProfileImport={() => {
-          setProfileImportPreview(null)
-          setProfilePackageBusy(false)
+          if (profilePackageRequest.current || currentImportPreview.current !== profileImportPreview) return
+          updateImportPreview(null)
         }}
         onConfirmProfileImport={(actions) => {
           if (profileImportPreview) {
-            void executeProfileImport(profileImportPreview.zipPath, actions, true)
+            void executeProfileImport(profileImportPreview, actions, true)
           }
         }}
       />
