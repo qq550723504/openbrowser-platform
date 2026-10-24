@@ -50,12 +50,19 @@ func (a *App) BackupGetLocalSettings() BackupLocalSettings {
 }
 
 func (a *App) BackupSelectLocalDirectory() (BackupSelectLocalDirectoryResult, error) {
+	dialogAuthCheck := a.captureAdmission()
+
 	if a == nil || a.ctx == nil {
 		return BackupSelectLocalDirectoryResult{}, fmt.Errorf("应用上下文未初始化")
 	}
-	selected, err := wailsruntime.OpenDirectoryDialog(a.ctx, wailsruntime.OpenDialogOptions{
+	selected, err := openNativeDirectoryDialog(a.ctx, wailsruntime.OpenDialogOptions{
 		Title: "选择本地备份目录",
 	})
+	if authErr := dialogAuthCheck(); authErr != nil {
+		var authZero0 BackupSelectLocalDirectoryResult
+		return authZero0, authErr
+	}
+
 	if err != nil {
 		return BackupSelectLocalDirectoryResult{}, fmt.Errorf("打开本地备份目录选择器失败: %w", err)
 	}
@@ -104,6 +111,11 @@ func (a *App) BackupSaveLocalDirectory(directory string) (BackupLocalSettings, e
 		return BackupLocalSettings{}, err
 	}
 	defer a.maintenanceMu.Unlock()
+	if authErr := a.checkScopedAdmission(); authErr != nil {
+		var authZero0 BackupLocalSettings
+		return authZero0, authErr
+	}
+
 	if err := a.backupSetLocalDirectoryLocked(absDirectory); err != nil {
 		return BackupLocalSettings{}, err
 	}
@@ -134,6 +146,8 @@ func (a *App) backupSetLocalDirectoryLocked(directory string) error {
 }
 
 func (a *App) backupResolveLocalPackagePath(defaultName, title string) (string, bool, error) {
+	dialogAuthCheck := a.captureAdmission()
+
 	if a == nil || a.ctx == nil {
 		return "", false, fmt.Errorf("应用上下文未初始化")
 	}
@@ -157,13 +171,19 @@ func (a *App) backupResolveLocalPackagePath(defaultName, title string) (string, 
 		return path, false, err
 	}
 
-	savePath, err := wailsruntime.SaveFileDialog(a.ctx, wailsruntime.SaveDialogOptions{
+	savePath, err := saveNativeFileDialog(a.ctx, wailsruntime.SaveDialogOptions{
 		Title:           title,
 		DefaultFilename: defaultName,
 		Filters: []wailsruntime.FileFilter{
 			{DisplayName: "ZIP 文件 (*.zip)", Pattern: "*.zip"},
 		},
 	})
+	if authErr := dialogAuthCheck(); authErr != nil {
+		var authZero0 string
+		var authZero1 bool
+		return authZero0, authZero1, authErr
+	}
+
 	if err != nil {
 		return "", false, fmt.Errorf("打开保存对话框失败: %w", err)
 	}

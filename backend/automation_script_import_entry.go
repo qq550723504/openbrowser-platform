@@ -32,17 +32,24 @@ func (a *App) AutomationScriptImportText(text string) (*automation.ScriptRecord,
 }
 
 func (a *App) AutomationScriptImportLocalFile() (*automation.ScriptRecord, error) {
+	dialogAuthCheck := a.captureAdmission()
+
 	if a.ctx == nil {
 		return nil, fmt.Errorf("应用上下文未初始化")
 	}
 
-	path, err := wailsruntime.OpenFileDialog(a.ctx, wailsruntime.OpenDialogOptions{
+	path, err := openNativeFileDialog(a.ctx, wailsruntime.OpenDialogOptions{
 		Title: "选择脚本文件",
 		Filters: []wailsruntime.FileFilter{
 			{DisplayName: "脚本文件 (*.zip;*.json;*.js;*.cjs;*.mjs;*.ts;*.cts;*.mts)", Pattern: "*.zip;*.json;*.js;*.cjs;*.mjs;*.ts;*.cts;*.mts"},
 			{DisplayName: "所有文件 (*.*)", Pattern: "*.*"},
 		},
 	})
+	if authErr := dialogAuthCheck(); authErr != nil {
+		var authZero0 *automation.ScriptRecord
+		return authZero0, authErr
+	}
+
 	if err != nil {
 		return nil, fmt.Errorf("打开文件对话框失败: %w", err)
 	}
@@ -58,13 +65,20 @@ func (a *App) AutomationScriptImportLocalFile() (*automation.ScriptRecord, error
 }
 
 func (a *App) AutomationScriptImportLocalDirectory() (*automation.ScriptRecord, error) {
+	dialogAuthCheck := a.captureAdmission()
+
 	if a.ctx == nil {
 		return nil, fmt.Errorf("应用上下文未初始化")
 	}
 
-	path, err := wailsruntime.OpenDirectoryDialog(a.ctx, wailsruntime.OpenDialogOptions{
+	path, err := openNativeDirectoryDialog(a.ctx, wailsruntime.OpenDialogOptions{
 		Title: "选择脚本目录",
 	})
+	if authErr := dialogAuthCheck(); authErr != nil {
+		var authZero0 *automation.ScriptRecord
+		return authZero0, authErr
+	}
+
 	if err != nil {
 		return nil, fmt.Errorf("打开目录对话框失败: %w", err)
 	}
@@ -80,13 +94,20 @@ func (a *App) AutomationScriptImportLocalDirectory() (*automation.ScriptRecord, 
 }
 
 func (a *App) AutomationScriptImportLocalLibrary() (*AutomationScriptBatchImportResult, error) {
+	dialogAuthCheck := a.captureAdmission()
+
 	if a.ctx == nil {
 		return nil, fmt.Errorf("应用上下文未初始化")
 	}
 
-	path, err := wailsruntime.OpenDirectoryDialog(a.ctx, wailsruntime.OpenDialogOptions{
+	path, err := openNativeDirectoryDialog(a.ctx, wailsruntime.OpenDialogOptions{
 		Title: "选择脚本库目录",
 	})
+	if authErr := dialogAuthCheck(); authErr != nil {
+		var authZero0 *AutomationScriptBatchImportResult
+		return authZero0, authErr
+	}
+
 	if err != nil {
 		return nil, fmt.Errorf("打开目录对话框失败: %w", err)
 	}

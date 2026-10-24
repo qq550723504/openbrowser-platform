@@ -1,3 +1,4 @@
+import { loadBusinessBridge } from '../../auth/loadBridge';
 import {
   normalizeAutomationScriptPublicAPIConfig,
   normalizeAutomationScriptRecordPayload,
@@ -9,7 +10,7 @@ import {
 
 export const getBindings = async () => {
   try {
-    return await import("../../wailsjs/go/main/App");
+    return await loadBusinessBridge();
   } catch {
     return null;
   }

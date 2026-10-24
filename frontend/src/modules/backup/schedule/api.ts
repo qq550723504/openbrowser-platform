@@ -1,3 +1,4 @@
+import { loadBusinessBridge } from '../../../auth/loadBridge';
 export interface ScheduledBackupSettings {
   enabled: boolean
   dailyTime: string
@@ -29,7 +30,7 @@ export const defaultScheduledBackupSettings: ScheduledBackupSettings = {
 
 const getBindings = async () => {
   try {
-    return await import('../../../wailsjs/go/main/App')
+    return await loadBusinessBridge()
   } catch {
     return null
   }

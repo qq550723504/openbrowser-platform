@@ -8,7 +8,9 @@ import (
 	"ant-chrome/backend/internal/launchcode"
 	"ant-chrome/backend/internal/logger"
 	"ant-chrome/backend/internal/proxy"
+	"ant-chrome/internal/desktopauth"
 	"context"
+	"os"
 	"strings"
 	"sync"
 )
@@ -22,21 +24,37 @@ const (
 
 // App 应用结构体
 type App struct {
-	ctx             context.Context
-	config          *config.Config
-	db              *database.DB
-	interceptor     *logger.MethodInterceptor
-	browserMgr      *browser.Manager
-	xrayMgr         *proxy.XrayManager
-	clashMgr        *proxy.ClashManager
-	singboxMgr      *proxy.SingBoxManager
-	launchCodeSvc   *launchcode.LaunchCodeService
-	launchServer    *launchcode.LaunchServer
-	automationMgr   *automation.Manager
-	speedScheduler  *browser.ProxySpeedScheduler
-	backupScheduler *backupScheduler
-	appRoot         string
-	version         string
+	*appState
+	ctx            context.Context
+	admission      func() error
+	authGeneration uint64
+}
+
+// Scoped receivers share original native state; managers and mutexes are never copied.
+type appState struct {
+	businessInitAttempted   bool
+	businessInitErr         error
+	ownedBrowsers           ownedBrowserReceipts
+	importPreviewMu         sync.Mutex
+	importPreviewPath       string
+	importPreviewGeneration uint64
+	identity                sessionAuthority
+	businessInitMu          sync.Mutex
+	businessReady           bool
+	config                  *config.Config
+	db                      *database.DB
+	interceptor             *logger.MethodInterceptor
+	browserMgr              *browser.Manager
+	xrayMgr                 *proxy.XrayManager
+	clashMgr                *proxy.ClashManager
+	singboxMgr              *proxy.SingBoxManager
+	launchCodeSvc           *launchcode.LaunchCodeService
+	launchServer            *launchcode.LaunchServer
+	automationMgr           *automation.Manager
+	speedScheduler          *browser.ProxySpeedScheduler
+	backupScheduler         *backupScheduler
+	appRoot                 string
+	version                 string
 
 	forceQuit                     bool
 	quitMode                      quitMode
@@ -68,7 +86,8 @@ func NewApp(appRoot string, appVersion ...string) *App {
 	if len(appVersion) > 0 {
 		version = strings.TrimSpace(appVersion[0])
 	}
-	return &App{
+	return &App{appState: &appState{
+		identity:               desktopauth.NewManager(desktopauth.Config{Issuer: os.Getenv("ABFREE_OIDC_ISSUER"), ClientID: os.Getenv("ABFREE_OIDC_CLIENT_ID")}),
 		appRoot:                strings.TrimSpace(appRoot),
 		version:                version,
 		profileBridgeRefs:      make(map[string]profileProxyBridgeRef),
@@ -76,7 +95,7 @@ func NewApp(appRoot string, appVersion ...string) *App {
 		automationTargetCursor: make(map[string]string),
 		profileWindowMarkers:   make(map[string]*profileWindowMarker),
 		browserProcessMonitors: make(map[string]*browserProcessMonitor),
-	}
+	}}
 }
 
 func (a *App) appName() string {

@@ -67,14 +67,14 @@ func (s *LaunchServer) APIAuthEnabled() bool {
 
 func (s *LaunchServer) apiAuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if !strings.HasPrefix(r.URL.Path, "/api/") {
+		if r.Method == http.MethodGet && r.URL.Path == "/api/health" {
 			next.ServeHTTP(w, r)
 			return
 		}
 
 		cfg := s.apiAuthConfig()
 		if !cfg.Active() {
-			next.ServeHTTP(w, r)
+			writeJSON(w, http.StatusUnauthorized, map[string]any{"error": "api_key_configuration_required"})
 			return
 		}
 

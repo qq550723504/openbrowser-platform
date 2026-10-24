@@ -1,0 +1,802 @@
+{
+  "AuthCancel": {
+    "arguments": 1,
+    "policy": "auth"
+  },
+  "AuthGrantAPI": {
+    "arguments": 2,
+    "policy": "auth"
+  },
+  "AuthLogin": {
+    "arguments": 1,
+    "policy": "auth"
+  },
+  "AuthLogout": {
+    "arguments": 1,
+    "policy": "auth"
+  },
+  "AuthStatus": {
+    "arguments": 0,
+    "policy": "auth"
+  },
+  "AutomationDemoCreateProfile": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "AutomationDemoCreateProfileWithOptions": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "AutomationDemoDeleteProfile": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "AutomationDemoHealthCheck": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "AutomationDemoLaunchProfile": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "AutomationProbeSystemNode": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "AutomationRuntimeSelfCheck": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "AutomationScriptDelete": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "AutomationScriptExport": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "AutomationScriptExportBatchZip": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "AutomationScriptExportDirectory": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "AutomationScriptExportZip": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "AutomationScriptGet": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "AutomationScriptImportGit": {
+    "arguments": 4,
+    "policy": "protected"
+  },
+  "AutomationScriptImportLocalDirectory": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "AutomationScriptImportLocalFile": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "AutomationScriptImportLocalLibrary": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "AutomationScriptImportRemote": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "AutomationScriptImportText": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "AutomationScriptInvokePublicAPI": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "AutomationScriptList": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "AutomationScriptRefresh": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "AutomationScriptRun": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "AutomationScriptRunList": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "AutomationScriptRunWithOptions": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "AutomationScriptSave": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BackupCreatePackage": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BackupExportPackage": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "BackupGetLocalSettings": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "BackupGetManifestTemplate": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "BackupGetScopeDefinition": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "BackupImportPackage": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "BackupListLocalBackups": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BackupOpenListDownload": {
+    "arguments": 3,
+    "policy": "protected"
+  },
+  "BackupOpenListGetSettings": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "BackupOpenListList": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BackupOpenListRestore": {
+    "arguments": 3,
+    "policy": "protected"
+  },
+  "BackupOpenListRevealToken": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "BackupOpenListSaveSettings": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BackupOpenListTest": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BackupOpenListUpload": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BackupRestoreLocalPackage": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BackupS3Download": {
+    "arguments": 3,
+    "policy": "protected"
+  },
+  "BackupS3GetSettings": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "BackupS3List": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BackupS3Restore": {
+    "arguments": 3,
+    "policy": "protected"
+  },
+  "BackupS3RevealCredential": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BackupS3SaveSettings": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BackupS3Test": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BackupS3Upload": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BackupSaveLocalDirectory": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BackupScheduledGetSettings": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "BackupScheduledSaveSettings": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BackupSelectLocalDirectory": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "BookmarkList": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "BookmarkReset": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "BookmarkSave": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BookmarkSyncToProfiles": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "BrowserClearCookies": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserCoreDelete": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserCoreDownload": {
+    "arguments": 4,
+    "policy": "protected"
+  },
+  "BrowserCoreExtendedInfo": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "BrowserCoreImportLocal": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "BrowserCoreImportLocalDirectory": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "BrowserCoreList": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "BrowserCoreRedownload": {
+    "arguments": 4,
+    "policy": "protected"
+  },
+  "BrowserCoreSave": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserCoreScan": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "BrowserCoreSetDefault": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserCoreValidate": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserExportCookies": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserExtensionDelete": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserExtensionInstall": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserExtensionInstallLocalDirectory": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "BrowserExtensionInstallLocalFile": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "BrowserExtensionInstallManualDownloadFile": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserExtensionInstallWithProxy": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserExtensionList": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "BrowserExtensionListManualDownloadFiles": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "BrowserExtensionLookup": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserExtensionLookupWithProxy": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserExtensionManualInstallGuide": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserExtensionOpenManualDownloadDir": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "BrowserExtensionSetDefaultInstall": {
+    "arguments": 3,
+    "policy": "protected"
+  },
+  "BrowserExtensionSetEnabled": {
+    "arguments": 3,
+    "policy": "protected"
+  },
+  "BrowserGetAllTags": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "BrowserGetCookies": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserInstanceGetTabs": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserInstanceOpenFingerprintCheck": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserInstanceOpenUrl": {
+    "arguments": 3,
+    "policy": "protected"
+  },
+  "BrowserInstanceRestart": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserInstanceStart": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserInstanceStartByCode": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserInstanceStartDirect": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserInstanceStartWithParams": {
+    "arguments": 5,
+    "policy": "protected"
+  },
+  "BrowserInstanceStatus": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserInstanceStop": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserProfileBatchRemoveTags": {
+    "arguments": 3,
+    "policy": "protected"
+  },
+  "BrowserProfileBatchSetTags": {
+    "arguments": 4,
+    "policy": "protected"
+  },
+  "BrowserProfileCopy": {
+    "arguments": 3,
+    "policy": "protected"
+  },
+  "BrowserProfileCopyWithMode": {
+    "arguments": 4,
+    "policy": "protected"
+  },
+  "BrowserProfileCopyWithOptions": {
+    "arguments": 4,
+    "policy": "protected"
+  },
+  "BrowserProfileCreate": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserProfileDelete": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserProfileExtensionGet": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserProfileExtensionSave": {
+    "arguments": 4,
+    "policy": "protected"
+  },
+  "BrowserProfileFingerprintCheck": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserProfileFingerprintMatrix": {
+    "arguments": 4,
+    "policy": "protected"
+  },
+  "BrowserProfileGetCode": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserProfileList": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "BrowserProfileListByTag": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserProfilePackageExport": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserProfilePackageImport": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "BrowserProfilePackageImportWithOptions": {
+    "arguments": 3,
+    "policy": "protected"
+  },
+  "BrowserProfilePackagePrepareImport": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "BrowserProfilePackagePrepareImportFromPath": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserProfilePermanentlyDelete": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserProfileRegenerateCode": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserProfileRestore": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserProfileSetCode": {
+    "arguments": 3,
+    "policy": "protected"
+  },
+  "BrowserProfileSetKeywords": {
+    "arguments": 3,
+    "policy": "protected"
+  },
+  "BrowserProfileTrashCleanup": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "BrowserProfileTrashList": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "BrowserProfileUpdate": {
+    "arguments": 3,
+    "policy": "protected"
+  },
+  "BrowserProxyBatchCheckIPHealth": {
+    "arguments": 3,
+    "policy": "protected"
+  },
+  "BrowserProxyBatchTestSpeed": {
+    "arguments": 3,
+    "policy": "protected"
+  },
+  "BrowserProxyBatchWarmupBridge": {
+    "arguments": 3,
+    "policy": "protected"
+  },
+  "BrowserProxyBuildDiagnostic": {
+    "arguments": 3,
+    "policy": "protected"
+  },
+  "BrowserProxyCheckIPHealth": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserProxyCoreDownload": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserProxyCoreDownloadInfo": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserProxyCoreOpenLocal": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserProxyCoreStatus": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserProxyFetchClashByURL": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserProxyFetchClashByURLWithProxy": {
+    "arguments": 3,
+    "policy": "protected"
+  },
+  "BrowserProxyList": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "BrowserProxyListByGroup": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserProxyListGroups": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "BrowserProxyProbeBrowserPage": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserProxyResolveLocation": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserProxyTestSpeed": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserProxyWarmupBridge": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserProxyWarmupBridgeWithConfig": {
+    "arguments": 3,
+    "policy": "protected"
+  },
+  "BrowserRenameTag": {
+    "arguments": 3,
+    "policy": "protected"
+  },
+  "BrowserSnapshotCreate": {
+    "arguments": 3,
+    "policy": "protected"
+  },
+  "BrowserSnapshotDelete": {
+    "arguments": 3,
+    "policy": "protected"
+  },
+  "BrowserSnapshotList": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "BrowserSnapshotRestore": {
+    "arguments": 3,
+    "policy": "protected"
+  },
+  "ClearAppLogs": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "CloseOwnedBrowser": {
+    "arguments": 1,
+    "policy": "cleanup"
+  },
+  "CreateGroup": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "DeleteGroup": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "FetchRemoteAuthorProfile": {
+    "arguments": 3,
+    "policy": "protected"
+  },
+  "ForceQuit": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "FrontendOperationLog": {
+    "arguments": 6,
+    "policy": "protected"
+  },
+  "GetAppConfig": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "GetAppLogs": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "GetAutomationState": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "GetBackupFileInfo": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "GetBrowserSettings": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "GetDashboardStats": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "GetLaunchServerInfo": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "GetLogLevel": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "GetMemoryStats": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "GetProxyCheckSettings": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "GetRunningInstances": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "InstallAutomationRuntime": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "ListGroups": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "MoveInstancesToGroup": {
+    "arguments": 3,
+    "policy": "protected"
+  },
+  "OpenBackupPath": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "OpenCorePath": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "OpenProjectRoot": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "OpenUserDataDir": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "OpenUserDataRoot": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "QuitAppOnly": {
+    "arguments": 0,
+    "policy": "cleanup"
+  },
+  "ReloadConfig": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "ResetManagedSettings": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "SaveAutomationRuntimeSettings": {
+    "arguments": 3,
+    "policy": "protected"
+  },
+  "SaveAutomationScriptPackageSettings": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "SaveAutomationSettings": {
+    "arguments": 3,
+    "policy": "protected"
+  },
+  "SaveBrowserProxies": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "SaveBrowserSettings": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "SaveLaunchServerSettings": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "SaveProxyCheckSettings": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "SetLogLevel": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "StartInstance": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "StartInstanceWithParams": {
+    "arguments": 3,
+    "policy": "protected"
+  },
+  "StatusInstance": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "StopInstance": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "TestProxyConnectivity": {
+    "arguments": 3,
+    "policy": "protected"
+  },
+  "TestProxyRealConnectivity": {
+    "arguments": 2,
+    "policy": "protected"
+  },
+  "TriggerGC": {
+    "arguments": 1,
+    "policy": "protected"
+  },
+  "UpdateGroup": {
+    "arguments": 3,
+    "policy": "protected"
+  },
+  "ValidateProxyConfig": {
+    "arguments": 3,
+    "policy": "protected"
+  },
+  "WaitInstanceDebugReady": {
+    "arguments": 4,
+    "policy": "protected"
+  }
+}

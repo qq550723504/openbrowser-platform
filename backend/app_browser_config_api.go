@@ -111,6 +111,8 @@ func (a *App) BrowserCoreScan() []BrowserCore {
 
 // BrowserCoreImportLocal 选择一个已解压内核目录或归档文件并注册。
 func (a *App) BrowserCoreImportLocal() (*BrowserCore, error) {
+	dialogAuthCheck := a.captureAdmission()
+
 	if a.ctx == nil {
 		return nil, fmt.Errorf("app context is nil")
 	}
@@ -118,13 +120,18 @@ func (a *App) BrowserCoreImportLocal() (*BrowserCore, error) {
 		return nil, fmt.Errorf("browser manager is nil")
 	}
 
-	selectedPath, err := wailsruntime.OpenFileDialog(a.ctx, wailsruntime.OpenDialogOptions{
+	selectedPath, err := openNativeFileDialog(a.ctx, wailsruntime.OpenDialogOptions{
 		Title: "选择 Chrome 内核归档文件",
 		Filters: []wailsruntime.FileFilter{
 			{DisplayName: "Chrome 内核归档 (" + browser.SupportedCoreArchiveDescription() + ")", Pattern: browser.SupportedCoreArchivePattern()},
 			{DisplayName: "所有文件 (*.*)", Pattern: "*.*"},
 		},
 	})
+	if authErr := dialogAuthCheck(); authErr != nil {
+		var authZero0 *BrowserCore
+		return authZero0, authErr
+	}
+
 	if err != nil {
 		return nil, err
 	}
@@ -233,6 +240,8 @@ func coreNameFromArchiveName(name string) string {
 
 // BrowserCoreImportLocalDirectory 选择一个已解压内核目录并直接注册，不下载、不复制文件。
 func (a *App) BrowserCoreImportLocalDirectory() (*BrowserCore, error) {
+	dialogAuthCheck := a.captureAdmission()
+
 	if a.ctx == nil {
 		return nil, fmt.Errorf("app context is nil")
 	}
@@ -240,9 +249,14 @@ func (a *App) BrowserCoreImportLocalDirectory() (*BrowserCore, error) {
 		return nil, fmt.Errorf("browser manager is nil")
 	}
 
-	selectedDir, err := wailsruntime.OpenDirectoryDialog(a.ctx, wailsruntime.OpenDialogOptions{
+	selectedDir, err := openNativeDirectoryDialog(a.ctx, wailsruntime.OpenDialogOptions{
 		Title: "选择已解压的 Chrome 内核目录",
 	})
+	if authErr := dialogAuthCheck(); authErr != nil {
+		var authZero0 *BrowserCore
+		return authZero0, authErr
+	}
+
 	if err != nil {
 		return nil, err
 	}
@@ -310,6 +324,10 @@ func (a *App) relativeCorePathIfPossible(absDir string) string {
 func (a *App) BrowserCoreDownload(coreName, url, proxyConfig string) error {
 	a.maintenanceMu.Lock()
 	defer a.maintenanceMu.Unlock()
+	if authErr := a.checkScopedAdmission(); authErr != nil {
+		return authErr
+	}
+
 	if a.browserMgr == nil {
 		return fmt.Errorf("浏览器管理器未初始化")
 	}
@@ -322,6 +340,10 @@ func (a *App) BrowserCoreDownload(coreName, url, proxyConfig string) error {
 func (a *App) BrowserCoreRedownload(coreId, url, proxyConfig string) error {
 	a.maintenanceMu.Lock()
 	defer a.maintenanceMu.Unlock()
+	if authErr := a.checkScopedAdmission(); authErr != nil {
+		return authErr
+	}
+
 	if a.browserMgr == nil {
 		return fmt.Errorf("浏览器管理器未初始化")
 	}

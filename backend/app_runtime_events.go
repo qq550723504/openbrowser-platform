@@ -1,6 +1,7 @@
 package backend
 
 import (
+	"ant-chrome/backend/internal/automation"
 	"context"
 	"fmt"
 
@@ -39,6 +40,10 @@ func (a *App) startBackgroundTask(task func(context.Context)) error {
 	if task == nil {
 		return fmt.Errorf("后台任务不能为空")
 	}
+	check, authErr := a.currentAdmission()
+	if authErr != nil {
+		return authErr
+	}
 
 	a.runtimeMu.Lock()
 	if a.ctx == nil {
@@ -56,12 +61,15 @@ func (a *App) startBackgroundTask(task func(context.Context)) error {
 	if a.backgroundTaskCtx == nil || a.backgroundTaskCancel == nil {
 		a.backgroundTaskCtx, a.backgroundTaskCancel = context.WithCancel(a.ctx)
 	}
-	taskCtx := a.backgroundTaskCtx
+	taskCtx := automation.WithAdmission(a.backgroundTaskCtx, check)
 	a.backgroundTasks.Add(1)
 	a.runtimeMu.Unlock()
 
 	go func() {
 		defer a.backgroundTasks.Done()
+		if check() != nil {
+			return
+		}
 		task(taskCtx)
 	}()
 	return nil
@@ -107,6 +115,9 @@ func (a *App) emitRuntimeEvent(eventName string, optionalData ...interface{}) {
 
 func (a *App) emitRuntimeEventWithContext(ctx context.Context, eventName string, optionalData ...interface{}) {
 	if a == nil {
+		return
+	}
+	if eventName != "app:ready" && eventName != "app:request-close" && a.identity != nil && a.identity.Status().State != "signed_in" {
 		return
 	}
 	a.runtimeMu.RLock()

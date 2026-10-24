@@ -71,6 +71,9 @@ func (s *LaunchServer) maybeAutoLaunchProfile(profile *browser.Profile, req Prof
 }
 
 func (s *LaunchServer) createProfileInternal(input browser.ProfileInput) (*browser.Profile, error) {
+	if err := s.checkAdmission(); err != nil {
+		return nil, err
+	}
 	if creator, ok := s.starter.(profileCreator); ok {
 		return creator.CreateProfile(input)
 	}
@@ -81,6 +84,9 @@ func (s *LaunchServer) createProfileInternal(input browser.ProfileInput) (*brows
 }
 
 func (s *LaunchServer) updateProfileInternal(profileID string, input browser.ProfileInput) (*browser.Profile, error) {
+	if err := s.checkAdmission(); err != nil {
+		return nil, err
+	}
 	if updater, ok := s.starter.(profileUpdater); ok {
 		return updater.UpdateProfile(profileID, input)
 	}
@@ -91,6 +97,9 @@ func (s *LaunchServer) updateProfileInternal(profileID string, input browser.Pro
 }
 
 func (s *LaunchServer) deleteCreatedProfile(profileID string) error {
+	if err := s.checkAdmission(); err != nil {
+		return err
+	}
 	if deleter, ok := s.starter.(profileDeleter); ok {
 		return deleter.DeleteProfile(profileID)
 	}

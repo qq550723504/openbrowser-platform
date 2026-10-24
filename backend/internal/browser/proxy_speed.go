@@ -10,17 +10,18 @@ type SpeedTestFunc func(proxyId string) (ok bool, latencyMs int64, err string)
 
 // ProxySpeedScheduler 代理测速定时调度器
 type ProxySpeedScheduler struct {
-	dao       ProxyDAO
-	testFn    SpeedTestFunc
-	interval  time.Duration
-	concLimit int
-	stopCh    chan struct{}
-	doneCh    chan struct{}
-	mu        sync.Mutex
-	running   bool
-	testing   bool
-	stopped   bool
-	runWG     sync.WaitGroup
+	CaptureAdmission func() func() error
+	dao              ProxyDAO
+	testFn           SpeedTestFunc
+	interval         time.Duration
+	concLimit        int
+	stopCh           chan struct{}
+	doneCh           chan struct{}
+	mu               sync.Mutex
+	running          bool
+	testing          bool
+	stopped          bool
+	runWG            sync.WaitGroup
 }
 
 const (
@@ -135,6 +136,13 @@ func (s *ProxySpeedScheduler) runTracked() {
 }
 
 func (s *ProxySpeedScheduler) runAll() {
+	check := func() error { return nil }
+	if s.CaptureAdmission != nil {
+		check = s.CaptureAdmission()
+	}
+	if check() != nil {
+		return
+	}
 	if !s.beginRun() {
 		return
 	}
@@ -158,9 +166,15 @@ func (s *ProxySpeedScheduler) runAll() {
 		go func(proxyId string) {
 			defer wg.Done()
 			defer func() { <-sem }()
+			if check() != nil {
+				return
+			}
 
 			ok, latencyMs, _ := s.testFn(proxyId)
 			testedAt := time.Now().Format(time.RFC3339)
+			if check() != nil {
+				return
+			}
 			_ = s.dao.UpdateSpeedResult(proxyId, ok, latencyMs, testedAt)
 		}(p.ProxyId)
 	}

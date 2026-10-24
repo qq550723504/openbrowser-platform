@@ -9,13 +9,14 @@ import { lazyNamed } from "./routes/lazyNamed";
 import { useNotificationStore } from "./store/notificationStore";
 import { useBackupStore } from "./store/backupStore";
 import { installWailsOperationLogger } from "./utils/wailsOperationLogger";
+import { AuthGate, useAuthStatus } from "./auth/AuthGate";
+import { signedIn } from "./auth/session";
 import {
   ForceQuit as ForceQuitApp,
   QuitAppOnly as QuitAppOnlyApp,
-} from "./wailsjs/go/main/App";
+} from "./auth/bridge";
 import {
   Environment,
-  Quit,
   WindowHide,
   WindowMinimise,
 } from "./wailsjs/runtime/runtime";
@@ -149,6 +150,8 @@ function useGlobalErrorNotifications() {
 }
 
 function CloseConfirmModal() {
+  useAuthStatus();
+  const authenticated = signedIn();
   const [open, setOpen] = useState(false);
   const [platform, setPlatform] = useState("windows");
   const [quittingAction, setQuittingAction] = useState<
@@ -238,14 +241,11 @@ function CloseConfirmModal() {
     setQuittingAction("app-and-browser");
     closeAfterAnimation(async () => {
       try {
-        await Promise.race([
-          ForceQuitApp(),
-          new Promise((resolve) => setTimeout(resolve, 1200)),
-        ]);
+        await ForceQuitApp();
       } catch (error) {
-        console.error("ForceQuit failed, falling back to runtime.Quit()", error);
+        console.error("ForceQuit failed", error);
+        setQuittingAction(null);
       }
-      Quit();
     });
   };
 
@@ -302,6 +302,7 @@ function CloseConfirmModal() {
                 variant="danger"
                 className="flex-1"
                 onClick={handleQuitAppAndBrowsers}
+                disabled={!authenticated || quitting}
                 loading={quittingAction === "app-and-browser"}
               >
                 仍要关闭
@@ -330,7 +331,7 @@ function CloseConfirmModal() {
                 className="w-full"
                 onClick={handleQuitAppAndBrowsers}
                 loading={quittingAction === "app-and-browser"}
-                disabled={quitting}
+                disabled={!authenticated || quitting}
               >
                 退出应用与浏览器
               </Button>
@@ -342,7 +343,7 @@ function CloseConfirmModal() {
   );
 }
 
-function App() {
+function BusinessShell() {
   useEffect(() => {
     installWailsOperationLogger();
   }, []);
@@ -371,15 +372,12 @@ function App() {
   }, []);
 
   return (
-    <ThemeProvider>
-      <Router>
+    <>
         <Layout>
           <Suspense fallback={routeFallback}>
             <AppRoutes />
           </Suspense>
         </Layout>
-        <ToastContainer />
-        <CloseConfirmModal />
         <Suspense fallback={null}>
           {quickLaunchOpen ? (
             <QuickLaunchModal
@@ -388,9 +386,12 @@ function App() {
             />
           ) : null}
         </Suspense>
-      </Router>
-    </ThemeProvider>
+    </>
   );
+}
+
+function App() {
+  return <ThemeProvider><Router><AuthGate><BusinessShell /></AuthGate><ToastContainer /><CloseConfirmModal /></Router></ThemeProvider>;
 }
 
 export default App;

@@ -1,3 +1,4 @@
+import { authSnapshot, signedIn } from '../auth/session';
 const MUTATION_METHOD_PATTERN = /(Create|Update|Delete|Save|Set|Import|Export|Install|Uninstall|Download|Start|Stop|Launch|Run|Clear|Move|Copy|Refresh|Sync|Validate|Toggle|Switch|Enable|Disable|Force|Quit|Open|Close|Apply|Bind|Unbind|Restart|Warmup|Probe|Check|Test)/
 const SKIP_METHODS = new Set(['GetAppLogs', 'FrontendOperationLog'])
 
@@ -17,12 +18,15 @@ function shouldLogFailure(method: string) {
   return !SKIP_METHODS.has(method)
 }
 
-function recordOperation(level: 'debug' | 'info' | 'error', method: string, success: boolean, durationMs: number, message = '') {
+function recordOperation(generation: unknown, level: 'debug' | 'info' | 'error', method: string, success: boolean, durationMs: number, message = '') {
+  if (typeof generation !== 'number' || !signedIn() || authSnapshot().generation !== generation) return
   const app = (window as any)?.go?.main?.App
   const logger = app?.FrontendOperationLog
   if (typeof logger !== 'function') return
   try {
-    void logger(level, method, success, Math.max(0, Math.round(durationMs)), String(message || '').slice(0, 1200))
+    void Promise.resolve(logger(level, method, success, Math.max(0, Math.round(durationMs)), String(message || '').slice(0, 1200), generation)).catch(() => {})
+    // Business logging uses the same captured generation as its initiating call.
+    // Auth operations never enter this business-data logger.
   } catch {
     // Logging must never break user operations.
   }
@@ -42,9 +46,10 @@ export function installWailsOperationLogger() {
 
   Object.keys(app).forEach((method) => {
     const original = app[method]
-    if (typeof original !== 'function' || SKIP_METHODS.has(method)) return
+    if (typeof original !== 'function' || SKIP_METHODS.has(method) || method.startsWith('Auth')) return
 
     app[method] = (...args: unknown[]) => {
+      const generation = args[args.length - 1]
       const startedAt = performance.now()
       try {
         const result = original(...args)
@@ -52,24 +57,24 @@ export function installWailsOperationLogger() {
           return result.then((value: unknown) => {
             const level = successLogLevel(method)
             if (level) {
-              recordOperation(level, method, true, performance.now() - startedAt)
+              recordOperation(generation, level, method, true, performance.now() - startedAt)
             }
             return value
           }).catch((error: unknown) => {
             if (shouldLogFailure(method)) {
-              recordOperation('error', method, false, performance.now() - startedAt, stringifyError(error))
+              recordOperation(generation, 'error', method, false, performance.now() - startedAt, stringifyError(error))
             }
             throw error
           })
         }
         const level = successLogLevel(method)
         if (level) {
-          recordOperation(level, method, true, performance.now() - startedAt)
+          recordOperation(generation, level, method, true, performance.now() - startedAt)
         }
         return result
       } catch (error) {
         if (shouldLogFailure(method)) {
-          recordOperation('error', method, false, performance.now() - startedAt, stringifyError(error))
+          recordOperation(generation, 'error', method, false, performance.now() - startedAt, stringifyError(error))
         }
         throw error
       }

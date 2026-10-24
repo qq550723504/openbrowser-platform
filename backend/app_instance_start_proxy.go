@@ -11,6 +11,9 @@ import (
 const temporaryDirectProxyID = "__direct__"
 
 func (a *App) resolveBrowserStartProxy(input browserStartInput, profile *BrowserProfile) (string, profileProxyBridgeRef, bool, error) {
+	if err := a.captureAdmission()(); err != nil {
+		return "", profileProxyBridgeRef{}, false, err
+	}
 	log := logger.New("Browser")
 	proxies := a.getLatestProxies()
 	profileID := input.ProfileID

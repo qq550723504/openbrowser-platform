@@ -24,7 +24,7 @@ func (a *App) SaveAutomationSettings(enabled bool, headlessDefault bool) (map[st
 
 	if a.automationMgr != nil {
 		a.automationMgr.SetConfig(a.config)
-		state := a.automationMgr.CurrentState()
+		state := a.automationMgr.CurrentState(a.ctx)
 		if enabled && !state.Ready && strings.EqualFold(a.config.Automation.InstallPolicy, config.DefaultAutomationInstallPolicy) {
 			a.automationMgr.InstallAsync(a.ctx)
 		}

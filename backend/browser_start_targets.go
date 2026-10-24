@@ -3,6 +3,7 @@ package backend
 import (
 	"encoding/json"
 	"fmt"
+	"net/url"
 	"strings"
 	"time"
 
@@ -48,8 +49,9 @@ func buildBrowserLaunchTargets(startURLs []string, defaultStartURLs []string, sk
 }
 
 type deferredStartTargetsPlan struct {
-	targets []string
-	newTabs bool
+	targets   []string
+	newTabs   bool
+	admission func() error
 }
 
 func deferredStartTargetsWarning(targets []string, err error) string {
@@ -73,7 +75,7 @@ func (a *App) storeDeferredStartTargets(profileId string, targets []string, newT
 		delete(a.deferredStartTargets, profileId)
 		return
 	}
-	a.deferredStartTargets[profileId] = deferredStartTargetsPlan{targets: append([]string{}, normalized...), newTabs: newTabs}
+	a.deferredStartTargets[profileId] = deferredStartTargetsPlan{targets: append([]string{}, normalized...), newTabs: newTabs, admission: a.captureAdmission()}
 }
 
 func (a *App) consumeDeferredStartTargets(profileId string) deferredStartTargetsPlan {
@@ -101,6 +103,15 @@ func (a *App) clearDeferredStartTargets(profileId string) {
 }
 
 func cdpBrowserCallResult(debugPort int, method string, params map[string]any) (map[string]any, error) {
+	return cdpBrowserCallVerified(debugPort, method, params, nil)
+}
+
+func cdpBrowserCallVerified(debugPort int, method string, params map[string]any, verify func() error) (map[string]any, error) {
+	if verify != nil {
+		if err := verify(); err != nil {
+			return nil, err
+		}
+	}
 	body, err := cdpGetEndpointBody(debugPort, "/json/version")
 	if err != nil {
 		return nil, fmt.Errorf("CDP /json/version 请求失败: %w", err)
@@ -113,12 +124,23 @@ func cdpBrowserCallResult(debugPort int, method string, params map[string]any) (
 	if wsURL == "" {
 		return nil, fmt.Errorf("未找到浏览器级 WebSocket 调试地址")
 	}
+	if verify != nil {
+		u, parseErr := url.Parse(wsURL)
+		if parseErr != nil || u.Scheme != "ws" || u.Host != fmt.Sprintf("127.0.0.1:%d", debugPort) || u.User != nil || u.RawQuery != "" || u.Fragment != "" || !strings.HasPrefix(u.Path, "/devtools/browser/") {
+			return nil, errOwnedCleanupUnknown
+		}
+	}
 
 	conn, err := cdpDialWebSocket(wsURL)
 	if err != nil {
 		return nil, fmt.Errorf("浏览器级 WebSocket 连接失败: %w", err)
 	}
 	defer conn.Close()
+	if verify != nil {
+		if err := verify(); err != nil {
+			return nil, err
+		}
+	}
 	conn.SetReadDeadline(time.Now().Add(cdpWebSocketReadTimeout))
 
 	msg := cdpMessage{Id: 1, Method: method, Params: params}
@@ -132,6 +154,9 @@ func cdpBrowserCallResult(debugPort int, method string, params map[string]any) (
 	}
 	if cdpResp.Error != nil {
 		return nil, fmt.Errorf("浏览器级 CDP 错误: %s", cdpResp.Error.Message)
+	}
+	if verify != nil && cdpResp.Id != msg.Id {
+		return nil, errOwnedCleanupUnknown
 	}
 	return cdpResp.Result, nil
 }
@@ -180,6 +205,11 @@ func openBrowserStartTargetsInNewTabs(debugPort int, targets []string) error {
 }
 
 func openDeferredStartTargets(debugPort int, plan deferredStartTargetsPlan) error {
+	if plan.admission != nil {
+		if err := plan.admission(); err != nil {
+			return err
+		}
+	}
 	if plan.newTabs {
 		return openBrowserStartTargetsInNewTabs(debugPort, plan.targets)
 	}

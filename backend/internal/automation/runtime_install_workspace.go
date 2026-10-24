@@ -20,7 +20,7 @@ func runtimeInstallNodeMode(auto config.AutomationConfig) string {
 }
 
 func (m *Manager) tryUseReadyRuntime(ctx context.Context, nodeMode string) (bool, error) {
-	state := m.CurrentState()
+	state := m.CurrentState(ctx)
 	if !state.Ready {
 		return false, nil
 	}

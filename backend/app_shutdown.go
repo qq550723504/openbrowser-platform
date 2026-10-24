@@ -9,6 +9,11 @@ import (
 )
 
 func (a *App) shutdown(ctx context.Context) {
+	if a.identity != nil {
+		a.identity.Close()
+	}
+	a.businessInitMu.Lock()
+	defer a.businessInitMu.Unlock()
 	log := logger.New("App")
 	a.stopRuntimeEvents()
 	a.stopBackupScheduler()
@@ -39,6 +44,21 @@ func (a *App) QuitAppOnly() {
 	a.setQuitMode(quitModeAppOnly)
 	a.stopRuntimeEvents()
 	a.runtimeQuit()
+}
+
+// Native tray callbacks are outside Wails. They use the same current Go session
+// and retain app-only exit if login expired; no business startup is performed.
+func QuitFromTray(a *App) {
+	if a.identity != nil {
+		status := a.identity.Status()
+		if status.State == "signed_in" {
+			if scoped, err := a.scoped(status.Generation); err == nil {
+				scoped.ForceQuit()
+				return
+			}
+		}
+	}
+	a.QuitAppOnly()
 }
 
 func Start(a *App, ctx context.Context) {
@@ -73,7 +93,7 @@ func (a *App) isQuitRequested() bool {
 func (a *App) shouldStopRuntimeServicesOnShutdown() bool {
 	a.quitMu.RLock()
 	defer a.quitMu.RUnlock()
-	return a.quitMode != quitModeAppOnly
+	return a.quitMode != quitModeAppOnly && (a.identity == nil || a.forceQuit)
 }
 
 func ShouldBlockClose(a *App, ctx context.Context) bool {

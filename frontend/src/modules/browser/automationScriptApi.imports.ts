@@ -1,3 +1,4 @@
+import { getBusinessApp } from '../../auth/session';
 import { importAutomationScript, type AutomationScriptRecord } from "./automationScripts";
 import { getBindings, normalizeAutomationScriptRecord, type AutomationScriptBatchImportResult } from "./automationScriptApi.shared";
 
@@ -9,7 +10,7 @@ export async function importAutomationScriptFromLocalFile(): Promise<AutomationS
     );
   }
 
-  const goApp = (window as any).go?.main?.App;
+  const goApp = getBusinessApp();
   if (typeof goApp?.AutomationScriptImportLocalFile === "function") {
     return normalizeAutomationScriptRecord(
       await goApp.AutomationScriptImportLocalFile(),
@@ -34,7 +35,7 @@ export async function importAutomationScriptFromText(
     );
   }
 
-  const goApp = (window as any).go?.main?.App;
+  const goApp = getBusinessApp();
   if (typeof goApp?.AutomationScriptImportText === "function") {
     return normalizeAutomationScriptRecord(
       await goApp.AutomationScriptImportText(normalizedText),
@@ -52,7 +53,7 @@ export async function importAutomationScriptFromLocalDirectory(): Promise<Automa
     );
   }
 
-  const goApp = (window as any).go?.main?.App;
+  const goApp = getBusinessApp();
   if (typeof goApp?.AutomationScriptImportLocalDirectory === "function") {
     return normalizeAutomationScriptRecord(
       await goApp.AutomationScriptImportLocalDirectory(),
@@ -92,7 +93,7 @@ export async function importAutomationScriptFromLocalLibrary(): Promise<Automati
     );
   }
 
-  const goApp = (window as any).go?.main?.App;
+  const goApp = getBusinessApp();
   if (typeof goApp?.AutomationScriptImportLocalLibrary === "function") {
     return normalizeAutomationScriptBatchImportResult(
       await goApp.AutomationScriptImportLocalLibrary(),
@@ -115,7 +116,7 @@ export async function importAutomationScriptFromRemote(url: string): Promise<Aut
     );
   }
 
-  const goApp = (window as any).go?.main?.App;
+  const goApp = getBusinessApp();
   if (typeof goApp?.AutomationScriptImportRemote === "function") {
     return normalizeAutomationScriptRecord(
       await goApp.AutomationScriptImportRemote(normalizedURL),
@@ -149,7 +150,7 @@ export async function importAutomationScriptFromGit(
     );
   }
 
-  const goApp = (window as any).go?.main?.App;
+  const goApp = getBusinessApp();
   if (typeof goApp?.AutomationScriptImportGit === "function") {
     return normalizeAutomationScriptRecord(
       await goApp.AutomationScriptImportGit(
@@ -178,7 +179,7 @@ export async function refreshAutomationScript(
     );
   }
 
-  const goApp = (window as any).go?.main?.App;
+  const goApp = getBusinessApp();
   if (typeof goApp?.AutomationScriptRefresh === "function") {
     return normalizeAutomationScriptRecord(
       await goApp.AutomationScriptRefresh(normalizedScriptId),

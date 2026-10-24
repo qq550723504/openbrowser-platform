@@ -10,392 +10,400 @@ import {logger} from '../models';
 import {launchcode} from '../models';
 import {time} from '../models';
 
-export function AutomationDemoCreateProfile():Promise<Record<string, any>>;
+export function AutomationDemoCreateProfile(generation:number):Promise<Record<string, any>>;
 
-export function AutomationDemoCreateProfileWithOptions(arg1:string):Promise<Record<string, any>>;
+export function AutomationDemoCreateProfileWithOptions(arg1:string,generation:number):Promise<Record<string, any>>;
 
-export function AutomationDemoDeleteProfile(arg1:string):Promise<Record<string, any>>;
+export function AutomationDemoDeleteProfile(arg1:string,generation:number):Promise<Record<string, any>>;
 
-export function AutomationDemoHealthCheck():Promise<Record<string, any>>;
+export function AutomationDemoHealthCheck(generation:number):Promise<Record<string, any>>;
 
-export function AutomationDemoLaunchProfile(arg1:string):Promise<Record<string, any>>;
+export function AutomationDemoLaunchProfile(arg1:string,generation:number):Promise<Record<string, any>>;
 
-export function AutomationProbeSystemNode(arg1:string):Promise<Record<string, any>>;
+export function AutomationProbeSystemNode(arg1:string,generation:number):Promise<Record<string, any>>;
 
-export function AutomationRuntimeSelfCheck():Promise<Record<string, any>>;
+export function AutomationRuntimeSelfCheck(generation:number):Promise<Record<string, any>>;
 
-export function AutomationScriptDelete(arg1:string):Promise<void>;
+export function AutomationScriptDelete(arg1:string,generation:number):Promise<void>;
 
-export function AutomationScriptExport(arg1:string):Promise<Record<string, any>>;
+export function AutomationScriptExport(arg1:string,generation:number):Promise<Record<string, any>>;
 
-export function AutomationScriptExportBatchZip(arg1:Array<string>):Promise<Record<string, any>>;
+export function AutomationScriptExportBatchZip(arg1:Array<string>,generation:number):Promise<Record<string, any>>;
 
-export function AutomationScriptExportDirectory(arg1:string):Promise<Record<string, any>>;
+export function AutomationScriptExportDirectory(arg1:string,generation:number):Promise<Record<string, any>>;
 
-export function AutomationScriptExportZip(arg1:string):Promise<Record<string, any>>;
+export function AutomationScriptExportZip(arg1:string,generation:number):Promise<Record<string, any>>;
 
-export function AutomationScriptGet(arg1:string):Promise<automation.ScriptRecord>;
+export function AutomationScriptGet(arg1:string,generation:number):Promise<automation.ScriptRecord>;
 
-export function AutomationScriptImportGit(arg1:string,arg2:string,arg3:string):Promise<automation.ScriptRecord>;
+export function AutomationScriptImportGit(arg1:string,arg2:string,arg3:string,generation:number):Promise<automation.ScriptRecord>;
 
-export function AutomationScriptImportLocalDirectory():Promise<automation.ScriptRecord>;
+export function AutomationScriptImportLocalDirectory(generation:number):Promise<automation.ScriptRecord>;
 
-export function AutomationScriptImportLocalFile():Promise<automation.ScriptRecord>;
+export function AutomationScriptImportLocalFile(generation:number):Promise<automation.ScriptRecord>;
 
-export function AutomationScriptImportLocalLibrary():Promise<backend.AutomationScriptBatchImportResult>;
+export function AutomationScriptImportLocalLibrary(generation:number):Promise<backend.AutomationScriptBatchImportResult>;
 
-export function AutomationScriptImportRemote(arg1:string):Promise<automation.ScriptRecord>;
+export function AutomationScriptImportRemote(arg1:string,generation:number):Promise<automation.ScriptRecord>;
 
-export function AutomationScriptImportText(arg1:string):Promise<automation.ScriptRecord>;
+export function AutomationScriptImportText(arg1:string,generation:number):Promise<automation.ScriptRecord>;
 
-export function AutomationScriptInvokePublicAPI(arg1:backend.AutomationScriptPublicAPIInvokeInput):Promise<backend.AutomationScriptPublicAPIInvokeResult>;
+export function AutomationScriptInvokePublicAPI(arg1:backend.AutomationScriptPublicAPIInvokeInput,generation:number):Promise<backend.AutomationScriptPublicAPIInvokeResult>;
 
-export function AutomationScriptList():Promise<Array<automation.ScriptRecord>>;
+export function AutomationScriptList(generation:number):Promise<Array<automation.ScriptRecord>>;
 
-export function AutomationScriptRefresh(arg1:string):Promise<automation.ScriptRecord>;
+export function AutomationScriptRefresh(arg1:string,generation:number):Promise<automation.ScriptRecord>;
 
-export function AutomationScriptRun(arg1:string):Promise<automation.ScriptRunRecord>;
+export function AutomationScriptRun(arg1:string,generation:number):Promise<automation.ScriptRunRecord>;
 
-export function AutomationScriptRunList(arg1:number):Promise<Array<automation.ScriptRunRecord>>;
+export function AutomationScriptRunList(arg1:number,generation:number):Promise<Array<automation.ScriptRunRecord>>;
 
-export function AutomationScriptRunWithOptions(arg1:automation.ScriptRunRequest):Promise<automation.ScriptRunRecord>;
+export function AutomationScriptRunWithOptions(arg1:automation.ScriptRunRequest,generation:number):Promise<automation.ScriptRunRecord>;
 
-export function AutomationScriptSave(arg1:automation.ScriptRecord):Promise<automation.ScriptRecord>;
+export function AutomationScriptSave(arg1:automation.ScriptRecord,generation:number):Promise<automation.ScriptRecord>;
 
-export function BackupCreatePackage(arg1:Record<string, string>):Promise<Record<string, any>>;
+export function BackupCreatePackage(arg1:Record<string, string>,generation:number):Promise<Record<string, any>>;
 
-export function BackupExportPackage():Promise<Record<string, any>>;
+export function BackupExportPackage(generation:number):Promise<Record<string, any>>;
 
-export function BackupGetLocalSettings():Promise<backend.BackupLocalSettings>;
+export function BackupGetLocalSettings(generation:number):Promise<backend.BackupLocalSettings>;
 
-export function BackupGetManifestTemplate():Promise<backup.Manifest>;
+export function BackupGetManifestTemplate(generation:number):Promise<backup.Manifest>;
 
-export function BackupGetScopeDefinition():Promise<backup.Scope>;
+export function BackupGetScopeDefinition(generation:number):Promise<backup.Scope>;
 
-export function BackupImportPackage():Promise<Record<string, any>>;
+export function BackupImportPackage(generation:number):Promise<Record<string, any>>;
 
-export function BackupListLocalBackups(arg1:string):Promise<Array<backend.BackupLocalHistoryItem>>;
+export function BackupListLocalBackups(arg1:string,generation:number):Promise<Array<backend.BackupLocalHistoryItem>>;
 
-export function BackupOpenListDownload(arg1:Record<string, string>,arg2:string):Promise<Record<string, any>>;
+export function BackupOpenListDownload(arg1:Record<string, string>,arg2:string,generation:number):Promise<Record<string, any>>;
 
-export function BackupOpenListGetSettings():Promise<Record<string, any>>;
+export function BackupOpenListGetSettings(generation:number):Promise<Record<string, any>>;
 
-export function BackupOpenListList(arg1:Record<string, string>):Promise<Array<Record<string, any>>>;
+export function BackupOpenListList(arg1:Record<string, string>,generation:number):Promise<Array<Record<string, any>>>;
 
-export function BackupOpenListRestore(arg1:Record<string, string>,arg2:string):Promise<Record<string, any>>;
+export function BackupOpenListRestore(arg1:Record<string, string>,arg2:string,generation:number):Promise<Record<string, any>>;
 
-export function BackupOpenListRevealToken():Promise<string>;
+export function BackupOpenListRevealToken(generation:number):Promise<string>;
 
-export function BackupOpenListSaveSettings(arg1:Record<string, string>):Promise<Record<string, any>>;
+export function BackupOpenListSaveSettings(arg1:Record<string, string>,generation:number):Promise<Record<string, any>>;
 
-export function BackupOpenListTest(arg1:Record<string, string>):Promise<Record<string, any>>;
+export function BackupOpenListTest(arg1:Record<string, string>,generation:number):Promise<Record<string, any>>;
 
-export function BackupOpenListUpload(arg1:Record<string, string>):Promise<Record<string, any>>;
+export function BackupOpenListUpload(arg1:Record<string, string>,generation:number):Promise<Record<string, any>>;
 
-export function BackupRestoreLocalPackage(arg1:string):Promise<Record<string, any>>;
+export function BackupRestoreLocalPackage(arg1:string,generation:number):Promise<Record<string, any>>;
 
-export function BackupS3Download(arg1:Record<string, string>,arg2:string):Promise<Record<string, any>>;
+export function BackupS3Download(arg1:Record<string, string>,arg2:string,generation:number):Promise<Record<string, any>>;
 
-export function BackupS3GetSettings():Promise<Record<string, any>>;
+export function BackupS3GetSettings(generation:number):Promise<Record<string, any>>;
 
-export function BackupS3List(arg1:Record<string, string>):Promise<Array<Record<string, any>>>;
+export function BackupS3List(arg1:Record<string, string>,generation:number):Promise<Array<Record<string, any>>>;
 
-export function BackupS3Restore(arg1:Record<string, string>,arg2:string):Promise<Record<string, any>>;
+export function BackupS3Restore(arg1:Record<string, string>,arg2:string,generation:number):Promise<Record<string, any>>;
 
-export function BackupS3RevealCredential(arg1:string):Promise<string>;
+export function BackupS3RevealCredential(arg1:string,generation:number):Promise<string>;
 
-export function BackupS3SaveSettings(arg1:Record<string, string>):Promise<Record<string, any>>;
+export function BackupS3SaveSettings(arg1:Record<string, string>,generation:number):Promise<Record<string, any>>;
 
-export function BackupS3Test(arg1:Record<string, string>):Promise<Record<string, any>>;
+export function BackupS3Test(arg1:Record<string, string>,generation:number):Promise<Record<string, any>>;
 
-export function BackupS3Upload(arg1:Record<string, string>):Promise<Record<string, any>>;
+export function BackupS3Upload(arg1:Record<string, string>,generation:number):Promise<Record<string, any>>;
 
-export function BackupSaveLocalDirectory(arg1:string):Promise<backend.BackupLocalSettings>;
+export function BackupSaveLocalDirectory(arg1:string,generation:number):Promise<backend.BackupLocalSettings>;
 
-export function BackupScheduledGetSettings():Promise<Record<string, any>>;
+export function BackupScheduledGetSettings(generation:number):Promise<Record<string, any>>;
 
-export function BackupScheduledSaveSettings(arg1:Record<string, string>):Promise<Record<string, any>>;
+export function BackupScheduledSaveSettings(arg1:Record<string, string>,generation:number):Promise<Record<string, any>>;
 
-export function BackupSelectLocalDirectory():Promise<backend.BackupSelectLocalDirectoryResult>;
+export function BackupSelectLocalDirectory(generation:number):Promise<backend.BackupSelectLocalDirectoryResult>;
 
-export function BookmarkList():Promise<Array<config.BrowserBookmark>>;
+export function BookmarkList(generation:number):Promise<Array<config.BrowserBookmark>>;
 
-export function BookmarkReset():Promise<void>;
+export function BookmarkReset(generation:number):Promise<void>;
 
-export function BookmarkSave(arg1:Array<config.BrowserBookmark>):Promise<void>;
+export function BookmarkSave(arg1:Array<config.BrowserBookmark>,generation:number):Promise<void>;
 
-export function BookmarkSyncToProfiles():Promise<backend.BookmarkSyncResult>;
+export function BookmarkSyncToProfiles(generation:number):Promise<backend.BookmarkSyncResult>;
 
-export function BrowserClearCookies(arg1:string):Promise<void>;
+export function BrowserClearCookies(arg1:string,generation:number):Promise<void>;
 
-export function BrowserCoreDelete(arg1:string):Promise<void>;
+export function BrowserCoreDelete(arg1:string,generation:number):Promise<void>;
 
-export function BrowserCoreDownload(arg1:string,arg2:string,arg3:string):Promise<void>;
+export function BrowserCoreDownload(arg1:string,arg2:string,arg3:string,generation:number):Promise<void>;
 
-export function BrowserCoreExtendedInfo():Promise<Array<browser.CoreExtendedInfo>>;
+export function BrowserCoreExtendedInfo(generation:number):Promise<Array<browser.CoreExtendedInfo>>;
 
-export function BrowserCoreImportLocal():Promise<config.BrowserCore>;
+export function BrowserCoreImportLocal(generation:number):Promise<config.BrowserCore>;
 
-export function BrowserCoreImportLocalDirectory():Promise<config.BrowserCore>;
+export function BrowserCoreImportLocalDirectory(generation:number):Promise<config.BrowserCore>;
 
-export function BrowserCoreList():Promise<Array<config.BrowserCore>>;
+export function BrowserCoreList(generation:number):Promise<Array<config.BrowserCore>>;
 
-export function BrowserCoreRedownload(arg1:string,arg2:string,arg3:string):Promise<void>;
+export function BrowserCoreRedownload(arg1:string,arg2:string,arg3:string,generation:number):Promise<void>;
 
-export function BrowserCoreSave(arg1:browser.CoreInput):Promise<void>;
+export function BrowserCoreSave(arg1:browser.CoreInput,generation:number):Promise<void>;
 
-export function BrowserCoreScan():Promise<Array<config.BrowserCore>>;
+export function BrowserCoreScan(generation:number):Promise<Array<config.BrowserCore>>;
 
-export function BrowserCoreSetDefault(arg1:string):Promise<void>;
+export function BrowserCoreSetDefault(arg1:string,generation:number):Promise<void>;
 
-export function BrowserCoreValidate(arg1:string):Promise<browser.CoreValidateResult>;
+export function BrowserCoreValidate(arg1:string,generation:number):Promise<browser.CoreValidateResult>;
 
-export function BrowserExportCookies(arg1:string):Promise<string>;
+export function BrowserExportCookies(arg1:string,generation:number):Promise<string>;
 
-export function BrowserExtensionDelete(arg1:string):Promise<void>;
+export function BrowserExtensionDelete(arg1:string,generation:number):Promise<void>;
 
-export function BrowserExtensionInstall(arg1:string):Promise<browser.Extension>;
+export function BrowserExtensionInstall(arg1:string,generation:number):Promise<browser.Extension>;
 
-export function BrowserExtensionInstallLocalDirectory():Promise<browser.Extension>;
+export function BrowserExtensionInstallLocalDirectory(generation:number):Promise<browser.Extension>;
 
-export function BrowserExtensionInstallLocalFile():Promise<browser.Extension>;
+export function BrowserExtensionInstallLocalFile(generation:number):Promise<browser.Extension>;
 
-export function BrowserExtensionInstallManualDownloadFile(arg1:string):Promise<browser.Extension>;
+export function BrowserExtensionInstallManualDownloadFile(arg1:string,generation:number):Promise<browser.Extension>;
 
-export function BrowserExtensionInstallWithProxy(arg1:backend.BrowserExtensionWebStoreRequest):Promise<browser.Extension>;
+export function BrowserExtensionInstallWithProxy(arg1:backend.BrowserExtensionWebStoreRequest,generation:number):Promise<browser.Extension>;
 
-export function BrowserExtensionList():Promise<Array<browser.Extension>>;
+export function BrowserExtensionList(generation:number):Promise<Array<browser.Extension>>;
 
-export function BrowserExtensionListManualDownloadFiles():Promise<Array<backend.BrowserExtensionManualDownloadFile>>;
+export function BrowserExtensionListManualDownloadFiles(generation:number):Promise<Array<backend.BrowserExtensionManualDownloadFile>>;
 
-export function BrowserExtensionLookup(arg1:string):Promise<browser.ExtensionLookupResult>;
+export function BrowserExtensionLookup(arg1:string,generation:number):Promise<browser.ExtensionLookupResult>;
 
-export function BrowserExtensionLookupWithProxy(arg1:backend.BrowserExtensionWebStoreRequest):Promise<browser.ExtensionLookupResult>;
+export function BrowserExtensionLookupWithProxy(arg1:backend.BrowserExtensionWebStoreRequest,generation:number):Promise<browser.ExtensionLookupResult>;
 
-export function BrowserExtensionManualInstallGuide(arg1:string):Promise<backend.BrowserExtensionManualInstallGuide>;
+export function BrowserExtensionManualInstallGuide(arg1:string,generation:number):Promise<backend.BrowserExtensionManualInstallGuide>;
 
-export function BrowserExtensionOpenManualDownloadDir():Promise<void>;
+export function BrowserExtensionOpenManualDownloadDir(generation:number):Promise<void>;
 
-export function BrowserExtensionSetDefaultInstall(arg1:string,arg2:boolean):Promise<browser.Extension>;
+export function BrowserExtensionSetDefaultInstall(arg1:string,arg2:boolean,generation:number):Promise<browser.Extension>;
 
-export function BrowserExtensionSetEnabled(arg1:string,arg2:boolean):Promise<browser.Extension>;
+export function BrowserExtensionSetEnabled(arg1:string,arg2:boolean,generation:number):Promise<browser.Extension>;
 
-export function BrowserGetAllTags():Promise<Array<string>>;
+export function BrowserGetAllTags(generation:number):Promise<Array<string>>;
 
-export function BrowserGetCookies(arg1:string):Promise<Array<backend.CookieInfo>>;
+export function BrowserGetCookies(arg1:string,generation:number):Promise<Array<backend.CookieInfo>>;
 
-export function BrowserInstanceGetTabs(arg1:string):Promise<Array<browser.Tab>>;
+export function BrowserInstanceGetTabs(arg1:string,generation:number):Promise<Array<browser.Tab>>;
 
-export function BrowserInstanceOpenFingerprintCheck(arg1:string):Promise<browser.Profile>;
+export function BrowserInstanceOpenFingerprintCheck(arg1:string,generation:number):Promise<browser.Profile>;
 
-export function BrowserInstanceOpenUrl(arg1:string,arg2:string):Promise<boolean>;
+export function BrowserInstanceOpenUrl(arg1:string,arg2:string,generation:number):Promise<boolean>;
 
-export function BrowserInstanceRestart(arg1:string):Promise<browser.Profile>;
+export function BrowserInstanceRestart(arg1:string,generation:number):Promise<browser.Profile>;
 
-export function BrowserInstanceStart(arg1:string):Promise<browser.Profile>;
+export function BrowserInstanceStart(arg1:string,generation:number):Promise<browser.Profile>;
 
-export function BrowserInstanceStartByCode(arg1:string):Promise<browser.Profile>;
+export function BrowserInstanceStartByCode(arg1:string,generation:number):Promise<browser.Profile>;
 
-export function BrowserInstanceStartDirect(arg1:string):Promise<browser.Profile>;
+export function BrowserInstanceStartDirect(arg1:string,generation:number):Promise<browser.Profile>;
 
-export function BrowserInstanceStartWithParams(arg1:string,arg2:Array<string>,arg3:Array<string>,arg4:boolean):Promise<browser.Profile>;
+export function BrowserInstanceStartWithParams(arg1:string,arg2:Array<string>,arg3:Array<string>,arg4:boolean,generation:number):Promise<browser.Profile>;
 
-export function BrowserInstanceStatus(arg1:string):Promise<browser.Profile>;
+export function BrowserInstanceStatus(arg1:string,generation:number):Promise<browser.Profile>;
 
-export function BrowserInstanceStop(arg1:string):Promise<browser.Profile>;
+export function BrowserInstanceStop(arg1:string,generation:number):Promise<browser.Profile>;
 
-export function BrowserProfileBatchRemoveTags(arg1:Array<string>,arg2:Array<string>):Promise<void>;
+export function BrowserProfileBatchRemoveTags(arg1:Array<string>,arg2:Array<string>,generation:number):Promise<void>;
 
-export function BrowserProfileBatchSetTags(arg1:Array<string>,arg2:Array<string>,arg3:boolean):Promise<void>;
+export function BrowserProfileBatchSetTags(arg1:Array<string>,arg2:Array<string>,arg3:boolean,generation:number):Promise<void>;
 
-export function BrowserProfileCopy(arg1:string,arg2:string):Promise<browser.Profile>;
+export function BrowserProfileCopy(arg1:string,arg2:string,generation:number):Promise<browser.Profile>;
 
-export function BrowserProfileCopyWithMode(arg1:string,arg2:string,arg3:string):Promise<browser.Profile>;
+export function BrowserProfileCopyWithMode(arg1:string,arg2:string,arg3:string,generation:number):Promise<browser.Profile>;
 
-export function BrowserProfileCopyWithOptions(arg1:string,arg2:string,arg3:browser.ProfileCopyOptions):Promise<browser.Profile>;
+export function BrowserProfileCopyWithOptions(arg1:string,arg2:string,arg3:browser.ProfileCopyOptions,generation:number):Promise<browser.Profile>;
 
-export function BrowserProfileCreate(arg1:browser.ProfileInput):Promise<browser.Profile>;
+export function BrowserProfileCreate(arg1:browser.ProfileInput,generation:number):Promise<browser.Profile>;
 
-export function BrowserProfileDelete(arg1:string):Promise<void>;
+export function BrowserProfileDelete(arg1:string,generation:number):Promise<void>;
 
-export function BrowserProfileExtensionGet(arg1:string):Promise<browser.ProfileExtensionSettings>;
+export function BrowserProfileExtensionGet(arg1:string,generation:number):Promise<browser.ProfileExtensionSettings>;
 
-export function BrowserProfileExtensionSave(arg1:string,arg2:Array<string>,arg3:boolean):Promise<browser.ProfileExtensionSettings>;
+export function BrowserProfileExtensionSave(arg1:string,arg2:Array<string>,arg3:boolean,generation:number):Promise<browser.ProfileExtensionSettings>;
 
-export function BrowserProfileFingerprintCheck(arg1:string):Promise<backend.BrowserFingerprintCheckResult>;
+export function BrowserProfileFingerprintCheck(arg1:string,generation:number):Promise<backend.BrowserFingerprintCheckResult>;
 
-export function BrowserProfileFingerprintMatrix(arg1:string,arg2:string,arg3:Array<string>):Promise<backend.BrowserFingerprintCapabilityReport>;
+export function BrowserProfileFingerprintMatrix(arg1:string,arg2:string,arg3:Array<string>,generation:number):Promise<backend.BrowserFingerprintCapabilityReport>;
 
-export function BrowserProfileGetCode(arg1:string):Promise<string>;
+export function BrowserProfileGetCode(arg1:string,generation:number):Promise<string>;
 
-export function BrowserProfileList():Promise<Array<browser.Profile>>;
+export function BrowserProfileList(generation:number):Promise<Array<browser.Profile>>;
 
-export function BrowserProfileListByTag(arg1:string):Promise<Array<browser.Profile>>;
+export function BrowserProfileListByTag(arg1:string,generation:number):Promise<Array<browser.Profile>>;
 
-export function BrowserProfilePackageExport(arg1:Array<string>):Promise<backend.ProfilePackageExportResult>;
+export function BrowserProfilePackageExport(arg1:Array<string>,generation:number):Promise<backend.ProfilePackageExportResult>;
 
-export function BrowserProfilePackageImport():Promise<backend.ProfilePackageImportResult>;
+export function BrowserProfilePackageImport(generation:number):Promise<backend.ProfilePackageImportResult>;
 
-export function BrowserProfilePackageImportWithOptions(arg1:string,arg2:backend.ProfilePackageImportOptions):Promise<backend.ProfilePackageImportResult>;
+export function BrowserProfilePackageImportWithOptions(arg1:string,arg2:backend.ProfilePackageImportOptions,generation:number):Promise<backend.ProfilePackageImportResult>;
 
-export function BrowserProfilePackagePrepareImport():Promise<backend.ProfilePackageImportPreview>;
+export function BrowserProfilePackagePrepareImport(generation:number):Promise<backend.ProfilePackageImportPreview>;
 
-export function BrowserProfilePackagePrepareImportFromPath(arg1:string):Promise<backend.ProfilePackageImportPreview>;
+export function BrowserProfilePackagePrepareImportFromPath(arg1:string,generation:number):Promise<backend.ProfilePackageImportPreview>;
 
-export function BrowserProfilePermanentlyDelete(arg1:string):Promise<void>;
+export function BrowserProfilePermanentlyDelete(arg1:string,generation:number):Promise<void>;
 
-export function BrowserProfileRegenerateCode(arg1:string):Promise<string>;
+export function BrowserProfileRegenerateCode(arg1:string,generation:number):Promise<string>;
 
-export function BrowserProfileRestore(arg1:string):Promise<browser.Profile>;
+export function BrowserProfileRestore(arg1:string,generation:number):Promise<browser.Profile>;
 
-export function BrowserProfileSetCode(arg1:string,arg2:string):Promise<string>;
+export function BrowserProfileSetCode(arg1:string,arg2:string,generation:number):Promise<string>;
 
-export function BrowserProfileSetKeywords(arg1:string,arg2:Array<string>):Promise<browser.Profile>;
+export function BrowserProfileSetKeywords(arg1:string,arg2:Array<string>,generation:number):Promise<browser.Profile>;
 
-export function BrowserProfileTrashCleanup():Promise<void>;
+export function BrowserProfileTrashCleanup(generation:number):Promise<void>;
 
-export function BrowserProfileTrashList():Promise<Array<browser.Profile>>;
+export function BrowserProfileTrashList(generation:number):Promise<Array<browser.Profile>>;
 
-export function BrowserProfileUpdate(arg1:string,arg2:browser.ProfileInput):Promise<browser.Profile>;
+export function BrowserProfileUpdate(arg1:string,arg2:browser.ProfileInput,generation:number):Promise<browser.Profile>;
 
-export function BrowserProxyBatchCheckIPHealth(arg1:Array<string>,arg2:number):Promise<Array<backend.ProxyIPHealthResult>>;
+export function BrowserProxyBatchCheckIPHealth(arg1:Array<string>,arg2:number,generation:number):Promise<Array<backend.ProxyIPHealthResult>>;
 
-export function BrowserProxyBatchTestSpeed(arg1:Array<string>,arg2:number):Promise<Array<backend.ProxyTestResult>>;
+export function BrowserProxyBatchTestSpeed(arg1:Array<string>,arg2:number,generation:number):Promise<Array<backend.ProxyTestResult>>;
 
-export function BrowserProxyBatchWarmupBridge(arg1:Array<string>,arg2:number):Promise<Array<backend.ProxyBridgeWarmupResult>>;
+export function BrowserProxyBatchWarmupBridge(arg1:Array<string>,arg2:number,generation:number):Promise<Array<backend.ProxyBridgeWarmupResult>>;
 
-export function BrowserProxyBuildDiagnostic(arg1:string,arg2:string):Promise<proxy.ProxyBuildDiagnostic>;
+export function BrowserProxyBuildDiagnostic(arg1:string,arg2:string,generation:number):Promise<proxy.ProxyBuildDiagnostic>;
 
-export function BrowserProxyCheckIPHealth(arg1:string):Promise<backend.ProxyIPHealthResult>;
+export function BrowserProxyCheckIPHealth(arg1:string,generation:number):Promise<backend.ProxyIPHealthResult>;
 
-export function BrowserProxyCoreDownload(arg1:backend.ProxyCoreDownloadRequest):Promise<void>;
+export function BrowserProxyCoreDownload(arg1:backend.ProxyCoreDownloadRequest,generation:number):Promise<void>;
 
-export function BrowserProxyCoreDownloadInfo(arg1:backend.ProxyCoreDownloadRequest):Promise<backend.ProxyCoreDownloadInfoResult>;
+export function BrowserProxyCoreDownloadInfo(arg1:backend.ProxyCoreDownloadRequest,generation:number):Promise<backend.ProxyCoreDownloadInfoResult>;
 
-export function BrowserProxyCoreOpenLocal(arg1:backend.ProxyCoreDownloadRequest):Promise<void>;
+export function BrowserProxyCoreOpenLocal(arg1:backend.ProxyCoreDownloadRequest,generation:number):Promise<void>;
 
-export function BrowserProxyCoreStatus(arg1:backend.ProxyCoreDownloadRequest):Promise<backend.ProxyCoreStatusResult>;
+export function BrowserProxyCoreStatus(arg1:backend.ProxyCoreDownloadRequest,generation:number):Promise<backend.ProxyCoreStatusResult>;
 
-export function BrowserProxyFetchClashByURL(arg1:string):Promise<Record<string, any>>;
+export function BrowserProxyFetchClashByURL(arg1:string,generation:number):Promise<Record<string, any>>;
 
-export function BrowserProxyFetchClashByURLWithProxy(arg1:string,arg2:string):Promise<Record<string, any>>;
+export function BrowserProxyFetchClashByURLWithProxy(arg1:string,arg2:string,generation:number):Promise<Record<string, any>>;
 
-export function BrowserProxyList():Promise<Array<config.BrowserProxy>>;
+export function BrowserProxyList(generation:number):Promise<Array<config.BrowserProxy>>;
 
-export function BrowserProxyListByGroup(arg1:string):Promise<Array<config.BrowserProxy>>;
+export function BrowserProxyListByGroup(arg1:string,generation:number):Promise<Array<config.BrowserProxy>>;
 
-export function BrowserProxyListGroups():Promise<Array<string>>;
+export function BrowserProxyListGroups(generation:number):Promise<Array<string>>;
 
-export function BrowserProxyProbeBrowserPage(arg1:backend.ProxyBrowserProbeRequest):Promise<backend.ProxyBrowserProbeResult>;
+export function BrowserProxyProbeBrowserPage(arg1:backend.ProxyBrowserProbeRequest,generation:number):Promise<backend.ProxyBrowserProbeResult>;
 
-export function BrowserProxyResolveLocation(arg1:string):Promise<backend.ProxyLocationResolveResult>;
+export function BrowserProxyResolveLocation(arg1:string,generation:number):Promise<backend.ProxyLocationResolveResult>;
 
-export function BrowserProxyTestSpeed(arg1:string):Promise<backend.ProxyTestResult>;
+export function BrowserProxyTestSpeed(arg1:string,generation:number):Promise<backend.ProxyTestResult>;
 
-export function BrowserProxyWarmupBridge(arg1:string):Promise<backend.ProxyBridgeWarmupResult>;
+export function BrowserProxyWarmupBridge(arg1:string,generation:number):Promise<backend.ProxyBridgeWarmupResult>;
 
-export function BrowserProxyWarmupBridgeWithConfig(arg1:string,arg2:string):Promise<backend.ProxyBridgeWarmupResult>;
+export function BrowserProxyWarmupBridgeWithConfig(arg1:string,arg2:string,generation:number):Promise<backend.ProxyBridgeWarmupResult>;
 
-export function BrowserRenameTag(arg1:string,arg2:string):Promise<void>;
+export function BrowserRenameTag(arg1:string,arg2:string,generation:number):Promise<void>;
 
-export function BrowserSnapshotCreate(arg1:string,arg2:string):Promise<backend.SnapshotInfo>;
+export function BrowserSnapshotCreate(arg1:string,arg2:string,generation:number):Promise<backend.SnapshotInfo>;
 
-export function BrowserSnapshotDelete(arg1:string,arg2:string):Promise<void>;
+export function BrowserSnapshotDelete(arg1:string,arg2:string,generation:number):Promise<void>;
 
-export function BrowserSnapshotList(arg1:string):Promise<Array<backend.SnapshotInfo>>;
+export function BrowserSnapshotList(arg1:string,generation:number):Promise<Array<backend.SnapshotInfo>>;
 
-export function BrowserSnapshotRestore(arg1:string,arg2:string):Promise<void>;
+export function BrowserSnapshotRestore(arg1:string,arg2:string,generation:number):Promise<void>;
 
-export function ClearAppLogs():Promise<void>;
+export function ClearAppLogs(generation:number):Promise<void>;
 
-export function CreateGroup(arg1:browser.GroupInput):Promise<browser.Group>;
+export function CreateGroup(arg1:browser.GroupInput,generation:number):Promise<browser.Group>;
 
-export function DeleteGroup(arg1:string):Promise<void>;
+export function DeleteGroup(arg1:string,generation:number):Promise<void>;
 
-export function FetchRemoteAuthorProfile(arg1:string,arg2:number):Promise<Record<string, any>>;
+export function FetchRemoteAuthorProfile(arg1:string,arg2:number,generation:number):Promise<Record<string, any>>;
 
-export function ForceQuit():Promise<void>;
+export function ForceQuit(generation:number):Promise<void>;
 
-export function FrontendOperationLog(arg1:string,arg2:string,arg3:boolean,arg4:number,arg5:string):Promise<void>;
+export function FrontendOperationLog(arg1:string,arg2:string,arg3:boolean,arg4:number,arg5:string,generation:number):Promise<void>;
 
-export function GetAppConfig():Promise<Record<string, any>>;
+export function GetAppConfig(generation:number):Promise<Record<string, any>>;
 
-export function GetAppLogs():Promise<Array<logger.MemoryLogEntry>>;
+export function GetAppLogs(generation:number):Promise<Array<logger.MemoryLogEntry>>;
 
-export function GetAutomationState():Promise<Record<string, any>>;
+export function GetAutomationState(generation:number):Promise<Record<string, any>>;
 
-export function GetBackupFileInfo(arg1:string):Promise<Record<string, any>>;
+export function GetBackupFileInfo(arg1:string,generation:number):Promise<Record<string, any>>;
 
-export function GetBrowserSettings():Promise<browser.Settings>;
+export function GetBrowserSettings(generation:number):Promise<browser.Settings>;
 
-export function GetDashboardStats():Promise<Record<string, any>>;
+export function GetDashboardStats(generation:number):Promise<Record<string, any>>;
 
-export function GetInterceptor():Promise<logger.MethodInterceptor>;
 
-export function GetLaunchServerInfo():Promise<Record<string, any>>;
 
-export function GetLogLevel():Promise<string>;
+export function GetLaunchServerInfo(generation:number):Promise<Record<string, any>>;
 
-export function GetMemoryStats():Promise<Record<string, any>>;
+export function GetLogLevel(generation:number):Promise<string>;
 
-export function GetProxyCheckSettings():Promise<config.ProxyCheckConfig>;
+export function GetMemoryStats(generation:number):Promise<Record<string, any>>;
 
-export function GetRunningInstances():Promise<Array<browser.Profile>>;
+export function GetProxyCheckSettings(generation:number):Promise<config.ProxyCheckConfig>;
 
-export function InstallAutomationRuntime():Promise<Record<string, any>>;
+export function GetRunningInstances(generation:number):Promise<Array<browser.Profile>>;
 
-export function ListGroups():Promise<Array<browser.GroupWithCount>>;
+export function InstallAutomationRuntime(generation:number):Promise<Record<string, any>>;
 
-export function MoveInstancesToGroup(arg1:Array<string>,arg2:string):Promise<void>;
+export function ListGroups(generation:number):Promise<Array<browser.GroupWithCount>>;
 
-export function OpenBackupPath(arg1:string):Promise<void>;
+export function MoveInstancesToGroup(arg1:Array<string>,arg2:string,generation:number):Promise<void>;
 
-export function OpenCorePath(arg1:string):Promise<void>;
+export function OpenBackupPath(arg1:string,generation:number):Promise<void>;
 
-export function OpenProjectRoot():Promise<void>;
+export function OpenCorePath(arg1:string,generation:number):Promise<void>;
 
-export function OpenUserDataDir(arg1:string):Promise<void>;
+export function OpenProjectRoot(generation:number):Promise<void>;
 
-export function OpenUserDataRoot():Promise<void>;
+export function OpenUserDataDir(arg1:string,generation:number):Promise<void>;
+
+export function OpenUserDataRoot(generation:number):Promise<void>;
 
 export function QuitAppOnly():Promise<void>;
 
-export function ReloadConfig():Promise<void>;
+export function ReloadConfig(generation:number):Promise<void>;
 
-export function ResetManagedSettings():Promise<void>;
+export function ResetManagedSettings(generation:number):Promise<void>;
 
-export function SaveAutomationRuntimeSettings(arg1:string,arg2:string):Promise<Record<string, any>>;
+export function SaveAutomationRuntimeSettings(arg1:string,arg2:string,generation:number):Promise<Record<string, any>>;
 
-export function SaveAutomationScriptPackageSettings(arg1:boolean):Promise<Record<string, any>>;
+export function SaveAutomationScriptPackageSettings(arg1:boolean,generation:number):Promise<Record<string, any>>;
 
-export function SaveAutomationSettings(arg1:boolean,arg2:boolean):Promise<Record<string, any>>;
+export function SaveAutomationSettings(arg1:boolean,arg2:boolean,generation:number):Promise<Record<string, any>>;
 
-export function SaveBrowserProxies(arg1:Array<config.BrowserProxy>):Promise<void>;
+export function SaveBrowserProxies(arg1:Array<config.BrowserProxy>,generation:number):Promise<void>;
 
-export function SaveBrowserSettings(arg1:browser.Settings):Promise<void>;
+export function SaveBrowserSettings(arg1:browser.Settings,generation:number):Promise<void>;
 
-export function SaveLaunchServerSettings(arg1:number):Promise<Record<string, any>>;
+export function SaveLaunchServerSettings(arg1:number,generation:number):Promise<Record<string, any>>;
 
-export function SaveProxyCheckSettings(arg1:config.ProxyCheckConfig):Promise<void>;
+export function SaveProxyCheckSettings(arg1:config.ProxyCheckConfig,generation:number):Promise<void>;
 
-export function SetLogLevel(arg1:string):Promise<void>;
+export function SetLogLevel(arg1:string,generation:number):Promise<void>;
 
-export function StartInstance(arg1:string):Promise<browser.Profile>;
+export function StartInstance(arg1:string,generation:number):Promise<browser.Profile>;
 
-export function StartInstanceWithParams(arg1:string,arg2:launchcode.LaunchRequestParams):Promise<browser.Profile>;
+export function StartInstanceWithParams(arg1:string,arg2:launchcode.LaunchRequestParams,generation:number):Promise<browser.Profile>;
 
-export function StatusInstance(arg1:string):Promise<browser.Profile>;
+export function StatusInstance(arg1:string,generation:number):Promise<browser.Profile>;
 
-export function StopInstance(arg1:string):Promise<browser.Profile>;
+export function StopInstance(arg1:string,generation:number):Promise<browser.Profile>;
 
-export function TestProxyConnectivity(arg1:string,arg2:string):Promise<backend.ProxyTestResult>;
+export function TestProxyConnectivity(arg1:string,arg2:string,generation:number):Promise<backend.ProxyTestResult>;
 
-export function TestProxyRealConnectivity(arg1:string):Promise<backend.ProxyTestResult>;
+export function TestProxyRealConnectivity(arg1:string,generation:number):Promise<backend.ProxyTestResult>;
 
-export function TriggerGC():Promise<void>;
+export function TriggerGC(generation:number):Promise<void>;
 
-export function UpdateGroup(arg1:string,arg2:browser.GroupInput):Promise<browser.Group>;
+export function UpdateGroup(arg1:string,arg2:browser.GroupInput,generation:number):Promise<browser.Group>;
 
-export function ValidateProxyConfig(arg1:string,arg2:string):Promise<backend.ProxyValidationResult>;
+export function ValidateProxyConfig(arg1:string,arg2:string,generation:number):Promise<backend.ProxyValidationResult>;
 
-export function WaitInstanceDebugReady(arg1:string,arg2:number,arg3:time.Duration):Promise<browser.Profile>;
+export function WaitInstanceDebugReady(arg1:string,arg2:number,arg3:time.Duration,generation:number):Promise<browser.Profile>;
+
+export function AuthStatus():Promise<{generation:number;state:string;configured:boolean;subject?:string;issuer?:string;expiresAt?:string;errorCode?:string;apiGranted?:boolean}>;
+export function AuthLogin(generation:number):Promise<{generation:number;state:string;configured:boolean;subject?:string;issuer?:string;expiresAt?:string;errorCode?:string;apiGranted?:boolean}>;
+export function AuthCancel(generation:number):Promise<{generation:number;state:string;configured:boolean;subject?:string;issuer?:string;expiresAt?:string;errorCode?:string;apiGranted?:boolean}>;
+export function AuthLogout(generation:number):Promise<{generation:number;state:string;configured:boolean;subject?:string;issuer?:string;expiresAt?:string;errorCode?:string;apiGranted?:boolean}>;
+export function AuthGrantAPI(generation:number,enabled:boolean):Promise<void>;
+
+export function CloseOwnedBrowser(profileID:string):Promise<void>;

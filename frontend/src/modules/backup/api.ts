@@ -1,3 +1,4 @@
+import { loadBusinessBridge } from '../../auth/loadBridge';
 import type { BackupChannelSelection } from './channels'
 import type { BackupPackageInfo } from './packageInfo'
 import type { BrowserProfilePackageImportPreview } from '../browser/types'
@@ -73,7 +74,7 @@ export type BackupDestinationSelection = BackupChannelSelection
 
 const getBindings = async () => {
   try {
-    return await import('../../wailsjs/go/main/App')
+    return await loadBusinessBridge()
   } catch {
     return null
   }

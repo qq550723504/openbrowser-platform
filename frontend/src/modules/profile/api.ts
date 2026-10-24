@@ -1,3 +1,5 @@
+import { loadBusinessBridge } from '../../auth/loadBridge';
+import { getBusinessApp } from '../../auth/session';
 import profilePageConfig from '../../config/profile.config'
 import type { AuthorProfile, IconKey, ProfileChannel, ProfilePageData, ProfileProject } from './types'
 
@@ -22,7 +24,7 @@ const CHANNEL_ICON_BY_NAME: Record<string, IconKey> = {
 
 const getBindings = async () => {
   try {
-    return await import('../../wailsjs/go/main/App')
+    return await loadBusinessBridge()
   } catch {
     return null
   }
@@ -73,7 +75,7 @@ async function fetchRemoteAuthorPayload(authorURL: string, timeoutMs: number): P
     return (await bindings.FetchRemoteAuthorProfile(authorURL, timeoutMs)) || {}
   }
 
-  const goApp = (window as any).go?.main?.App
+  const goApp = getBusinessApp()
   if (goApp?.FetchRemoteAuthorProfile) {
     return (await goApp.FetchRemoteAuthorProfile(authorURL, timeoutMs)) || {}
   }

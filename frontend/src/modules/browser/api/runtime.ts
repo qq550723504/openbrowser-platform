@@ -1,15 +1,17 @@
-﻿import type { BrowserCore, BrowserProfile, BrowserProxy, BrowserSettings } from '../types'
+import { loadBusinessBridge } from '../../../auth/loadBridge';
+import type { BrowserCore, BrowserProfile, BrowserProxy, BrowserSettings } from '../types'
+import { getBusinessApp } from '../../../auth/session';
 
 export async function getBindings() {
   try {
-    return await import('../../../wailsjs/go/main/App')
+    return await loadBusinessBridge()
   } catch {
     return null
   }
 }
 
 export function getGoApp(): any {
-  return (globalThis as any).go?.main?.App ?? null
+  return getBusinessApp()
 }
 
 export function nowISOString(): string {

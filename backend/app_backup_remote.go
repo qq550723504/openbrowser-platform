@@ -151,6 +151,11 @@ func (a *App) BackupOpenListUpload(input map[string]string) (map[string]interfac
 		return nil, err
 	}
 	defer a.maintenanceMu.Unlock()
+	if authErr := a.checkScopedAdmission(); authErr != nil {
+		var authZero0 map[string]interface{}
+		return authZero0, authErr
+	}
+
 	return a.backupOpenListUploadLocked(input)
 }
 
@@ -197,6 +202,10 @@ func (a *App) BackupOpenListRestore(input map[string]string, fileName string) (m
 		return nil, err
 	}
 	defer a.maintenanceMu.Unlock()
+	if authErr := a.checkScopedAdmission(); authErr != nil {
+		var authZero0 map[string]interface{}
+		return authZero0, authErr
+	}
 
 	client, err := a.backupOpenListClient(input)
 	if err != nil {
@@ -214,6 +223,8 @@ func (a *App) BackupOpenListDownload(input map[string]string, fileName string) (
 }
 
 func (a *App) backupDownloadRemoteFile(client channels.Client, label string, timeout time.Duration, fileName string) (map[string]interface{}, error) {
+	dialogAuthCheck := a.captureAdmission()
+
 	if a == nil || a.ctx == nil {
 		return nil, fmt.Errorf(`应用上下文未初始化`)
 	}
@@ -237,6 +248,11 @@ func (a *App) backupDownloadRemoteFile(client channels.Client, label string, tim
 		return nil, err
 	}
 	defer a.maintenanceMu.Unlock()
+	if authErr := a.checkScopedAdmission(); authErr != nil {
+		var authZero0 map[string]interface{}
+		return authZero0, authErr
+	}
+
 	var savePath string
 	var err error
 	if configuredDirectory != `` {
@@ -245,13 +261,18 @@ func (a *App) backupDownloadRemoteFile(client channels.Client, label string, tim
 			return nil, err
 		}
 	} else {
-		savePath, err = wailsruntime.SaveFileDialog(a.ctx, wailsruntime.SaveDialogOptions{
+		savePath, err = saveNativeFileDialog(a.ctx, wailsruntime.SaveDialogOptions{
 			Title:           fmt.Sprintf(`下载%s备份`, label),
 			DefaultFilename: defaultName,
 			Filters: []wailsruntime.FileFilter{
 				{DisplayName: `ZIP 文件 (*.zip)`, Pattern: `*.zip`},
 			},
 		})
+		if authErr := dialogAuthCheck(); authErr != nil {
+			var authZero0 map[string]interface{}
+			return authZero0, authErr
+		}
+
 		if err != nil {
 			return nil, fmt.Errorf(`打开保存对话框失败: %w`, err)
 		}

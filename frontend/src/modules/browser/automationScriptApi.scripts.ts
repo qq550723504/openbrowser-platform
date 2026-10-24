@@ -1,3 +1,4 @@
+import { getBusinessApp } from '../../auth/session';
 import { loadAutomationScripts, saveAutomationScripts, type AutomationScriptRecord } from "./automationScripts";
 import { getBindings, normalizeAutomationScriptRecord, sortScripts } from "./automationScriptApi.shared";
 
@@ -12,7 +13,7 @@ export async function fetchAutomationScripts(): Promise<
     );
   }
 
-  const goApp = (window as any).go?.main?.App;
+  const goApp = getBusinessApp();
   if (typeof goApp?.AutomationScriptList === "function") {
     const raw = (await goApp.AutomationScriptList()) || [];
     return sortScripts(
@@ -33,7 +34,7 @@ export async function saveAutomationScript(
     );
   }
 
-  const goApp = (window as any).go?.main?.App;
+  const goApp = getBusinessApp();
   if (typeof goApp?.AutomationScriptSave === "function") {
     return normalizeAutomationScriptRecord(
       await goApp.AutomationScriptSave(script),
@@ -55,7 +56,7 @@ export async function deleteAutomationScript(scriptId: string): Promise<void> {
     return;
   }
 
-  const goApp = (window as any).go?.main?.App;
+  const goApp = getBusinessApp();
   if (typeof goApp?.AutomationScriptDelete === "function") {
     await goApp.AutomationScriptDelete(scriptId);
     return;

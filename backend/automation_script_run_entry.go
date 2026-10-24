@@ -33,6 +33,9 @@ func (a *App) AutomationScriptRun(scriptID string) (*automation.ScriptRunRecord,
 }
 
 func (a *App) AutomationScriptRunWithOptions(input automation.ScriptRunRequest) (*automation.ScriptRunRecord, error) {
+	if err := a.captureAdmission()(); err != nil {
+		return nil, err
+	}
 	startedAt := time.Now()
 	run := automation.ScriptRunRecord{
 		ScriptID:  strings.TrimSpace(input.ScriptID),

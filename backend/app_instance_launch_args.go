@@ -148,6 +148,10 @@ func (a *App) markProfileStoppedLocked(profileId string, profile *BrowserProfile
 }
 
 func (a *App) openBrowserWindowForRunningProfile(profile *BrowserProfile, extraLaunchArgs []string, startURLs []string) error {
+	check := a.captureAdmission()
+	if err := check(); err != nil {
+		return err
+	}
 	chromeBinaryPath, err := a.browserMgr.ResolveChromeBinary(profile)
 	if err != nil {
 		return err
@@ -170,6 +174,9 @@ func (a *App) openBrowserWindowForRunningProfile(profile *BrowserProfile, extraL
 		args = append(args, "about:blank")
 	}
 
+	if err := check(); err != nil {
+		return err
+	}
 	cmd, err := startBrowserWindowProcess(chromeBinaryPath, args)
 	if err != nil {
 		return fmt.Errorf("%s", describeChromeProcessStartError(chromeBinaryPath, err))
@@ -184,6 +191,10 @@ func (a *App) openBrowserWindowForRunningProfile(profile *BrowserProfile, extraL
 }
 
 func (a *App) openBrowserTabForRunningProfile(profile *BrowserProfile, extraLaunchArgs []string, startURLs []string) error {
+	check := a.captureAdmission()
+	if err := check(); err != nil {
+		return err
+	}
 	explicitTargets := normalizeNonEmptyStrings(startURLs)
 	targets := explicitTargets
 	if len(targets) == 0 {
@@ -191,6 +202,9 @@ func (a *App) openBrowserTabForRunningProfile(profile *BrowserProfile, extraLaun
 	}
 	if profile != nil && profile.DebugReady && profile.DebugPort > 0 {
 		for _, target := range targets {
+			if err := check(); err != nil {
+				return err
+			}
 			if err := createBrowserStartTarget(profile.DebugPort, target); err != nil {
 				if len(explicitTargets) == 0 && len(normalizeNonEmptyStrings(extraLaunchArgs)) == 0 {
 					return nil

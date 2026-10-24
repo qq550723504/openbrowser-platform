@@ -33,14 +33,18 @@ type SystemNodeProbeResult struct {
 	Version string `json:"version"`
 }
 
-func (m *Manager) resolveNodeRuntime(runtimeDir string, auto config.AutomationConfig) resolvedNodeRuntime {
+func (m *Manager) resolveNodeRuntime(runtimeDir string, auto config.AutomationConfig, contexts ...context.Context) resolvedNodeRuntime {
+	ctx := context.Background()
+	if len(contexts) > 0 && contexts[0] != nil {
+		ctx = contexts[0]
+	}
 	mode := config.DefaultAutomationNodeSource
 	if auto.NodeSource != "" {
 		mode = strings.TrimSpace(auto.NodeSource)
 	}
 
 	if mode != config.AutomationNodeSourceBundled {
-		if systemNode, err := m.resolveSystemNode(context.Background(), auto.SystemNodePath); err == nil {
+		if systemNode, err := m.resolveSystemNode(ctx, auto.SystemNodePath); err == nil {
 			return systemNode
 		} else if mode == config.AutomationNodeSourceSystem {
 			return resolvedNodeRuntime{
@@ -124,6 +128,9 @@ func (m *Manager) resolveSystemNode(ctx context.Context, explicitPath string) (r
 }
 
 func (m *Manager) probeNodeExecutable(ctx context.Context, nodePath string) (nodeProbeResult, error) {
+	if err := m.captureAdmission(ctx)(); err != nil {
+		return nodeProbeResult{}, err
+	}
 	nodePath = strings.TrimSpace(nodePath)
 	if nodePath == "" {
 		return nodeProbeResult{}, fmt.Errorf("Node 路径为空")
@@ -177,6 +184,9 @@ func (m *Manager) ProbeSystemNode(ctx context.Context, explicitPath string) (Sys
 }
 
 func (m *Manager) verifyNodeWithPlaywright(ctx context.Context, nodePath, runtimeDir string) (RuntimeCheckResult, error) {
+	if err := m.captureAdmission(ctx)(); err != nil {
+		return RuntimeCheckResult{}, err
+	}
 	nodePath = strings.TrimSpace(nodePath)
 	runtimeDir = strings.TrimSpace(runtimeDir)
 	if nodePath == "" {

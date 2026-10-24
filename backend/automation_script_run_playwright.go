@@ -107,7 +107,7 @@ func (a *App) runPlaywrightScript(ctx context.Context, script automation.ScriptR
 		return "", "", "脚本执行失败", automationRunContextErrorMessage(err)
 	}
 
-	state := a.automationMgr.CurrentState()
+	state := a.automationMgr.CurrentState(a.ctx)
 	if !state.Ready {
 		return "", "", "脚本执行失败", "自动化运行时尚未就绪"
 	}

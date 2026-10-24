@@ -54,6 +54,10 @@ func ensureLaunchServerPortAvailable(port int) error {
 }
 
 func (a *App) restartLaunchServer(port int) error {
+	return a.restartLaunchServerWith(port, (*launchcode.LaunchServer).Start)
+}
+
+func (a *App) restartLaunchServerWith(port int, start func(*launchcode.LaunchServer) error) error {
 	log := logger.New("LaunchServer")
 	previousServer := a.launchServer
 	if previousServer != nil {
@@ -63,12 +67,13 @@ func (a *App) restartLaunchServer(port int) error {
 	}
 
 	server := launchcode.NewLaunchServer(a.launchCodeSvc, a, a.browserMgr, port)
+	server.SetIdentityAuthority(a.identity, a.scopedHTTP)
 	server.SetAPIAuthConfig(launchcode.APIAuthConfig{
 		Enabled: a.config.LaunchServer.Auth.Enabled,
 		APIKey:  a.config.LaunchServer.Auth.APIKey,
 		Header:  a.config.LaunchServer.Auth.Header,
 	})
-	if err := server.Start(); err != nil {
+	if err := start(server); err != nil {
 		if previousServer != nil {
 			if restoreErr := previousServer.Start(); restoreErr != nil {
 				a.launchServer = nil

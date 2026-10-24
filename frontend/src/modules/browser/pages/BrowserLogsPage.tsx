@@ -1,3 +1,4 @@
+import { loadBusinessBridge } from '../../../auth/loadBridge';
 import { useEffect, useRef, useState } from 'react'
 import { RefreshCw, Trash2 } from 'lucide-react'
 import { Badge, Button, Card } from '../../../shared/components'
@@ -32,14 +33,14 @@ const levelColor = (level: string) => {
 
 async function fetchLogs(): Promise<LogEntry[]> {
   try {
-    const bindings: any = await import('../../../wailsjs/go/main/App')
+    const bindings: any = await loadBusinessBridge()
     return (await bindings.GetAppLogs()) || []
   } catch { return [] }
 }
 
 async function clearLogs() {
   try {
-    const bindings: any = await import('../../../wailsjs/go/main/App')
+    const bindings: any = await loadBusinessBridge()
     await bindings.ClearAppLogs()
   } catch { /* ignore */ }
 }

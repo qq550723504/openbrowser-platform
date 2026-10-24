@@ -31,7 +31,7 @@ func TestBackupImportFileTreesPreservesAppDataWhenUserDataOverlaps(t *testing.T)
 		t.Fatal(err)
 	}
 
-	app := &App{appRoot: appRoot, config: config.DefaultConfig()}
+	app := &App{appState: &appState{appRoot: appRoot, config: config.DefaultConfig()}}
 	stats := &backupMergeStats{}
 	var issues []error
 	app.backupImportFileTrees(payloadRoot, app.config, backup.Manifest{}, stats, func(_ string, _ string, err error) {
@@ -77,7 +77,7 @@ func TestBackupImportExternalCoresUsesManifestCoreIDs(t *testing.T) {
 		{ArchivePath: "payload/browser/cores/external/external-02/", CoreId: "core-a"},
 	}}
 
-	app := &App{appRoot: appRoot, config: config.DefaultConfig()}
+	app := &App{appState: &appState{appRoot: appRoot, config: config.DefaultConfig()}}
 	stats := &backupMergeStats{}
 	var issues []error
 	app.backupImportFileTrees(payloadRoot, incoming, manifest, stats, func(_ string, _ string, err error) {
@@ -129,7 +129,7 @@ func TestBackupImportExternalCoresUsesMappedTargetCoreIDs(t *testing.T) {
 	backupImportSetMapping(mappings.Cores, "core-b", "target-core-b", true)
 	backupImportSetMapping(mappings.Cores, "core-a", "target-core-a", true)
 
-	app := &App{appRoot: appRoot, config: config.DefaultConfig()}
+	app := &App{appState: &appState{appRoot: appRoot, config: config.DefaultConfig()}}
 	stats := &backupMergeStats{}
 	var issues []error
 	app.backupImportFileTrees(payloadRoot, incoming, manifest, stats, func(_ string, _ string, err error) {

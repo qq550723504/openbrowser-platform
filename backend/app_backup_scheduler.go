@@ -127,6 +127,13 @@ func (s *backupScheduler) loop() {
 }
 
 func (s *backupScheduler) check(now time.Time) {
+	if s.app == nil {
+		return
+	}
+	check, authErr := s.app.currentAdmission()
+	if authErr != nil {
+		return
+	}
 	s.mu.RLock()
 	if s.app == nil || s.app.config == nil || s.configurationError != "" || s.resetting {
 		s.mu.RUnlock()
@@ -165,7 +172,15 @@ func (s *backupScheduler) check(now time.Time) {
 	s.wg.Add(1)
 	go func() {
 		defer s.wg.Done()
-		s.execute(openList)
+		if check() != nil {
+			s.mu.Lock()
+			s.running = false
+			s.state.Status = backupScheduleStatusSkipped
+			s.state.LastError = "authentication_required"
+			s.mu.Unlock()
+			return
+		}
+		s.executeAdmitted(openList, check)
 	}()
 }
 
@@ -186,6 +201,10 @@ func backupScheduleParseTime(value string, location *time.Location) (time.Time, 
 }
 
 func (s *backupScheduler) execute(openList config.OpenListChannelConfig) {
+	s.executeAdmitted(openList, s.app.captureAdmission())
+}
+
+func (s *backupScheduler) executeAdmitted(openList config.OpenListChannelConfig, check func() error) {
 	defer func() {
 		s.mu.Lock()
 		s.running = false
@@ -211,6 +230,10 @@ func (s *backupScheduler) execute(openList config.OpenListChannelConfig) {
 		return
 	}
 	defer s.app.maintenanceMu.Unlock()
+	if check() != nil {
+		s.recordSkipped("authentication_required")
+		return
+	}
 	result, err := s.app.backupOpenListUploadLocked(map[string]string{
 		"baseURL":             openList.BaseURL,
 		"remotePath":          openList.RemotePath,

@@ -21,6 +21,10 @@ func (a *App) BackupExportPackage() (map[string]interface{}, error) {
 		return nil, err
 	}
 	defer a.maintenanceMu.Unlock()
+	if authErr := a.checkScopedAdmission(); authErr != nil {
+		var authZero0 map[string]interface{}
+		return authZero0, authErr
+	}
 
 	if a.ctx == nil {
 		return nil, fmt.Errorf("应用上下文未初始化")
@@ -74,23 +78,34 @@ func (a *App) BackupExportPackage() (map[string]interface{}, error) {
 
 // BackupImportPackage 从 ZIP 导入全量备份或实例备份。
 func (a *App) BackupImportPackage() (map[string]interface{}, error) {
+	dialogAuthCheck := a.captureAdmission()
+
 	if err := a.lockBackupImportMaintenance(); err != nil {
 		a.backupEmitImportProgress("error", 100, fmt.Sprintf("导入失败: %v", err))
 		return nil, err
 	}
 	defer a.maintenanceMu.Unlock()
+	if authErr := a.checkScopedAdmission(); authErr != nil {
+		var authZero0 map[string]interface{}
+		return authZero0, authErr
+	}
 
 	if a.ctx == nil {
 		return nil, fmt.Errorf("应用上下文未初始化")
 	}
 	a.backupEmitImportProgress("starting", 0, "等待选择 ZIP 配置文件...")
 
-	zipPath, err := wailsruntime.OpenFileDialog(a.ctx, wailsruntime.OpenDialogOptions{
+	zipPath, err := openNativeFileDialog(a.ctx, wailsruntime.OpenDialogOptions{
 		Title: "导入全局备份",
 		Filters: []wailsruntime.FileFilter{
 			{DisplayName: "ZIP 文件 (*.zip)", Pattern: "*.zip"},
 		},
 	})
+	if authErr := dialogAuthCheck(); authErr != nil {
+		var authZero0 map[string]interface{}
+		return authZero0, authErr
+	}
+
 	if err != nil {
 		a.backupEmitImportProgress("error", 100, fmt.Sprintf("打开文件对话框失败: %v", err))
 		return nil, fmt.Errorf("打开文件对话框失败: %w", err)
@@ -119,6 +134,10 @@ func (a *App) BackupRestoreLocalPackage(zipPath string) (map[string]interface{},
 		return nil, err
 	}
 	defer a.maintenanceMu.Unlock()
+	if authErr := a.checkScopedAdmission(); authErr != nil {
+		var authZero0 map[string]interface{}
+		return authZero0, authErr
+	}
 
 	zipPath = strings.TrimSpace(zipPath)
 	if zipPath == "" {

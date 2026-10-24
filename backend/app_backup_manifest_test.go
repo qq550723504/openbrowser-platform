@@ -73,7 +73,7 @@ func TestBackupPackageManifestDetectsTampering(t *testing.T) {
 
 func TestBackupNormalizeImportedConfigPaths(t *testing.T) {
 	root := t.TempDir()
-	app := &App{appRoot: filepath.Join(root, "current")}
+	app := &App{appState: &appState{appRoot: filepath.Join(root, "current")}}
 	current := config.DefaultConfig()
 	incoming := config.DefaultConfig()
 	incoming.Browser.UserDataRoot = filepath.Join(root, "old", "profiles")
@@ -104,7 +104,7 @@ func TestBackupNormalizeImportedConfigPaths(t *testing.T) {
 
 func TestBackupNormalizeImportedRelativeProfilePath(t *testing.T) {
 	root := t.TempDir()
-	app := &App{appRoot: filepath.Join(root, "current")}
+	app := &App{appState: &appState{appRoot: filepath.Join(root, "current")}}
 	incoming := config.DefaultConfig()
 	incoming.Browser.UserDataRoot = "data"
 	incoming.Browser.Profiles = []config.BrowserProfileConfig{{
@@ -120,7 +120,7 @@ func TestBackupNormalizeImportedRelativeProfilePath(t *testing.T) {
 
 func TestBackupNormalizeImportedProfilePathRejectsTraversal(t *testing.T) {
 	root := t.TempDir()
-	app := &App{appRoot: filepath.Join(root, "current")}
+	app := &App{appState: &appState{appRoot: filepath.Join(root, "current")}}
 	incoming := config.DefaultConfig()
 	incoming.Browser.UserDataRoot = "data"
 	incoming.Browser.Profiles = []config.BrowserProfileConfig{{
@@ -136,7 +136,7 @@ func TestBackupNormalizeImportedProfilePathRejectsTraversal(t *testing.T) {
 
 func TestBackupNormalizeImportedCorePathRejectsTraversal(t *testing.T) {
 	root := t.TempDir()
-	app := &App{appRoot: filepath.Join(root, "current")}
+	app := &App{appState: &appState{appRoot: filepath.Join(root, "current")}}
 	incoming := config.DefaultConfig()
 	incoming.Browser.CoreRoot = "chrome"
 	incoming.Browser.Cores = []config.BrowserCore{{

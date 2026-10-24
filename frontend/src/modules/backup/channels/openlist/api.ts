@@ -1,3 +1,4 @@
+import { loadBusinessBridge } from '../../../../auth/loadBridge';
 import { normalizeBackupPackageInfo, type BackupPackageInfo } from '../../packageInfo'
 
 export interface OpenListConnection {
@@ -31,7 +32,7 @@ export const defaultOpenListSettings: OpenListSettings = {
 
 const getBindings = async () => {
   try {
-    return await import('../../../../wailsjs/go/main/App')
+    return await loadBusinessBridge()
   } catch {
     return null
   }

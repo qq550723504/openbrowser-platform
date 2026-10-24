@@ -6,7 +6,10 @@ import (
 )
 
 func (m *Manager) SelfCheck(ctx context.Context) (RuntimeCheckResult, error) {
-	state := m.CurrentState()
+	if err := m.captureAdmission(ctx)(); err != nil {
+		return RuntimeCheckResult{}, err
+	}
+	state := m.CurrentState(ctx)
 	if !state.Ready {
 		return RuntimeCheckResult{}, fmt.Errorf("自动化运行时尚未就绪")
 	}

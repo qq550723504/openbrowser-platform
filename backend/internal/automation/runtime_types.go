@@ -1,6 +1,7 @@
 package automation
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os/exec"
@@ -52,6 +53,7 @@ type RuntimeCheckResult struct {
 }
 
 type Options struct {
+	CaptureAdmission   func() func() error
 	NodeDistBaseURL    string
 	NPMRegistryBaseURL string
 	TargetOS           string
@@ -127,7 +129,16 @@ func (m *Manager) SetConfig(cfg *config.Config) {
 	m.mu.Unlock()
 }
 
-func (m *Manager) CurrentState() RuntimeState {
+func (m *Manager) CurrentState(contexts ...context.Context) RuntimeState {
+	ctx := context.Background()
+	if len(contexts) > 0 && contexts[0] != nil {
+		ctx = contexts[0]
+	}
+	check := m.captureAdmission(ctx)
+	if err := check(); err != nil {
+		return RuntimeState{LastError: err.Error()}
+	}
+	ctx = WithAdmission(ctx, check)
 	m.mu.RLock()
 	cfg := m.config
 	installing := m.installing
@@ -142,7 +153,7 @@ func (m *Manager) CurrentState() RuntimeState {
 	runtimeDir := m.runtimeDir(auto.RuntimeVersion)
 	runnerPath := m.runnerScriptPath(runtimeDir)
 	playwrightPkgPath := filepath.Join(runtimeDir, "node_modules", "playwright-core", "package.json")
-	resolvedNode := m.resolveNodeRuntime(runtimeDir, auto)
+	resolvedNode := m.resolveNodeRuntime(runtimeDir, auto, ctx)
 	nodePath := strings.TrimSpace(resolvedNode.Path)
 	installed := fileExists(nodePath) && fileExists(playwrightPkgPath) && fileExists(runnerPath)
 

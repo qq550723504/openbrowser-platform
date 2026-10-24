@@ -75,7 +75,7 @@ func TestBackupScheduledSaveSettingsStoresTokenLocally(t *testing.T) {
 	if err != nil {
 		t.Fatalf("reload config: %v", err)
 	}
-	reloadedScheduler := newBackupScheduler(&App{appRoot: appRoot, config: persistedConfig})
+	reloadedScheduler := newBackupScheduler(&App{appState: &appState{appRoot: appRoot, config: persistedConfig}})
 	if err := reloadedScheduler.loadLocalConfig(); err != nil {
 		t.Fatalf("reload local backup config: %v", err)
 	}
@@ -147,7 +147,7 @@ func TestBackupScheduledSettingsExposeRecentBackupTimes(t *testing.T) {
 		t.Fatalf("persisted recentBackupTimes = %#v, want %#v", persisted.Backup.Schedule.RecentBackupTimes, want)
 	}
 
-	reloadedScheduler := newBackupScheduler(&App{appRoot: root, config: persisted})
+	reloadedScheduler := newBackupScheduler(&App{appState: &appState{appRoot: root, config: persisted}})
 	if err := reloadedScheduler.loadLocalConfig(); err != nil {
 		t.Fatalf("reload scheduler settings: %v", err)
 	}

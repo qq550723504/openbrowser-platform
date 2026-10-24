@@ -27,6 +27,7 @@ func (s *LaunchServer) buildMux() *http.ServeMux {
 func (s *LaunchServer) buildHandler(includeLocalhost bool) http.Handler {
 	var handler http.Handler = s.buildMux()
 	handler = s.apiAuthMiddleware(handler)
+	handler = s.identityMiddleware(handler)
 	if includeLocalhost {
 		handler = s.localhostMiddleware(handler)
 	}

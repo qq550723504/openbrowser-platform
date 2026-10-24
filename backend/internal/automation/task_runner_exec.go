@@ -19,6 +19,11 @@ const (
 )
 
 func (m *Manager) RunScriptTask(ctx context.Context, req ScriptTaskRequest) (ScriptTaskResult, error) {
+	check := m.captureAdmission(ctx)
+	if err := check(); err != nil {
+		return ScriptTaskResult{}, err
+	}
+	ctx = WithAdmission(ctx, check)
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -31,7 +36,7 @@ func (m *Manager) RunScriptTask(ctx context.Context, req ScriptTaskRequest) (Scr
 		timeoutLimit = time.Until(deadline)
 	}
 
-	state := m.CurrentState()
+	state := m.CurrentState(ctx)
 	if !state.Ready {
 		return ScriptTaskResult{}, fmt.Errorf("自动化运行时尚未就绪")
 	}
@@ -142,6 +147,10 @@ func formatTaskRunnerLogValue(value any) string {
 }
 
 func (m *Manager) executeTask(ctx context.Context, taskKey string, payload taskRunnerPayload, startMessage string, completeMessage string, timeoutLimit time.Duration) (string, taskRunnerResponse, string, int64, error) {
+	check := m.captureAdmission(ctx)
+	if err := check(); err != nil {
+		return "", taskRunnerResponse{}, "", 0, err
+	}
 	taskID, err := m.registerTask(taskKey)
 	if err != nil {
 		return "", taskRunnerResponse{}, "", 0, err
@@ -154,7 +163,7 @@ func (m *Manager) executeTask(ctx context.Context, taskKey string, payload taskR
 	}
 	defer os.Remove(payloadPath)
 
-	state := m.CurrentState()
+	state := m.CurrentState(ctx)
 	cmd := exec.CommandContext(ctx, state.NodePath, state.RunnerPath, payloadPath)
 	cmd.Dir = state.RuntimeDir
 	prepareTaskCommand(cmd)
@@ -173,6 +182,9 @@ func (m *Manager) executeTask(ctx context.Context, taskKey string, payload taskR
 		StartedAt: startedAt.Format(time.RFC3339),
 	})
 
+	if err := check(); err != nil {
+		return "", taskRunnerResponse{}, "", 0, err
+	}
 	output, runErr := cmd.CombinedOutput()
 	durationMs := time.Since(startedAt).Milliseconds()
 	if runErr != nil {

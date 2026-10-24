@@ -9,6 +9,10 @@ import (
 )
 
 func (a *App) startBrowserProfileWithPlan(input browserStartInput, plan *browserStartPlan) (*BrowserProfile, error) {
+	check := a.captureAdmission()
+	if err := check(); err != nil {
+		return nil, err
+	}
 	log := logger.New("Browser")
 	profile := plan.profile
 	a.clearDeferredStartTargets(input.ProfileID)
@@ -28,6 +32,9 @@ func (a *App) startBrowserProfileWithPlan(input browserStartInput, plan *browser
 		)
 		profile.LastError = startErr.Error()
 		return profile, startErr
+	}
+	if err := check(); err != nil {
+		return profile, err
 	}
 	if err := cmd.Start(); err != nil {
 		startErr := fmt.Errorf("%s", describeChromeProcessStartError(plan.chromeBinaryPath, err))
@@ -70,12 +77,13 @@ func (a *App) startBrowserProfileWithPlan(input browserStartInput, plan *browser
 				profile.RuntimeWarning = plan.extensionWarning
 			}
 			a.setBrowserProcessMonitorLocked(input.ProfileID, monitor)
+			a.rememberOwnedBrowser(input.ProfileID, plan.userDataDir, stableDebugPort, cmd, monitor)
 			if plan.acquiredProxyBridge.valid() {
 				a.bindProfileProxyBridge(input.ProfileID, plan.acquiredProxyBridge)
 				plan.releaseProxyBridge = false
 			}
 			if len(plan.deferredStartTargets) > 0 {
-				deferredPlan := deferredStartTargetsPlan{targets: plan.deferredStartTargets, newTabs: plan.deferredStartNewTabs}
+				deferredPlan := deferredStartTargetsPlan{targets: plan.deferredStartTargets, newTabs: plan.deferredStartNewTabs, admission: check}
 				if err := openDeferredStartTargets(stableDebugPort, deferredPlan); err != nil {
 					warning := deferredStartTargetsWarning(plan.deferredStartTargets, err)
 					if plan.extensionWarning != "" {
@@ -153,6 +161,7 @@ func (a *App) startBrowserProfileWithPlan(input browserStartInput, plan *browser
 		}
 		a.markProfileRunningLocked(input.ProfileID, profile, cmd, cmd.Process.Pid, plan.assignedDebugPort, false, runtimeWarning)
 		a.setBrowserProcessMonitorLocked(input.ProfileID, monitor)
+		a.rememberOwnedBrowser(input.ProfileID, plan.userDataDir, plan.assignedDebugPort, cmd, monitor)
 		if len(plan.deferredStartTargets) > 0 {
 			a.storeDeferredStartTargets(input.ProfileID, plan.deferredStartTargets, plan.deferredStartNewTabs)
 		}

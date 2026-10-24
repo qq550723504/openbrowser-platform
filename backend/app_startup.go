@@ -14,16 +14,20 @@ import (
 	"net/http"
 	"os"
 	"time"
-
-	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // startup 应用启动时调用
 func (a *App) startup(ctx context.Context) {
 	a.setRuntimeContext(ctx)
+	a.emitRuntimeEvent("app:ready")
+}
+
+func (a *App) startupBusiness(ctx context.Context, check func() error) error {
+	if err := check(); err != nil {
+		return err
+	}
 	if err := apppath.EnsureWritableLayout(a.appRoot); err != nil {
-		runtime.LogFatal(ctx, fmt.Sprintf("初始化 Linux 用户数据目录失败: %v", err))
-		return
+		return fmt.Errorf("初始化用户数据目录失败: %w", err)
 	}
 
 	cfg := a.startupLoadConfig()
@@ -31,6 +35,9 @@ func (a *App) startup(ctx context.Context) {
 	a.applyRuntimeConfig(cfg.Runtime)
 
 	log := a.startupInitLogger(ctx, cfg)
+	if err := check(); err != nil {
+		return err
+	}
 	if err := killResidualRuntimeProcesses(a.appRoot); err != nil {
 		log.Warn("清理上次异常退出遗留的代理进程失败", logger.F("error", err))
 	}
@@ -44,23 +51,36 @@ func (a *App) startup(ctx context.Context) {
 		log.Error("创建 data 目录失败", logger.F("error", err))
 	}
 
+	if err := check(); err != nil {
+		return err
+	}
 	a.ensureDefaultCores()
 	a.startupInitInterceptor(log, cfg)
 
 	db, err := a.startupInitDatabase(cfg)
 	if err != nil {
 		log.Error("初始化数据库失败", logger.F("error", err))
-		runtime.LogFatal(ctx, fmt.Sprintf("初始化数据库失败: %v", err))
-		return
+		return fmt.Errorf("初始化数据库失败: %w", err)
 	}
 	a.db = db
+	if err := check(); err != nil {
+		return err
+	}
 	if err := db.Migrate(); err != nil {
 		log.Error("数据库迁移失败", logger.F("error", err))
+		return err
 	}
 
-	a.startupInitManagers(cfg, db)
+	if err := a.startupInitManagers(cfg, db, check); err != nil {
+		return err
+	}
 	a.startupInitLaunchCode(log)
-	a.startupInitLaunchServer(log)
+	if err := check(); err != nil {
+		return err
+	}
+	if err := a.startupInitLaunchServer(log); err != nil {
+		return err
+	}
 	a.startupInitAutomation()
 	a.startupInitBridgeHooks()
 	a.startupInitSpeedScheduler()
@@ -68,6 +88,7 @@ func (a *App) startup(ctx context.Context) {
 	a.emitRuntimeEvent("app:ready")
 
 	log.Info("应用启动成功")
+	return check()
 }
 
 func (a *App) startupLoadConfig() *config.Config {
@@ -130,7 +151,10 @@ func (a *App) startupInitDatabase(cfg *config.Config) (*database.DB, error) {
 	return database.NewDB(a.resolveAppPath(cfg.Database.SQLite.Path))
 }
 
-func (a *App) startupInitManagers(cfg *config.Config, db *database.DB) {
+func (a *App) startupInitManagers(cfg *config.Config, db *database.DB, check func() error) error {
+	if err := check(); err != nil {
+		return err
+	}
 	a.browserMgr = browser.NewManager(cfg, a.appRoot)
 	a.browserMgr.EventEmitter = a.emitRuntimeEvent
 	a.xrayMgr = proxy.NewXrayManager(cfg, a.appRoot)
@@ -149,15 +173,25 @@ func (a *App) startupInitManagers(cfg *config.Config, db *database.DB) {
 	a.browserMgr.GroupDAO = browser.NewSQLiteGroupDAO(conn)
 	a.browserMgr.ExtensionDAO = browser.NewSQLiteExtensionDAO(conn)
 
+	if err := check(); err != nil {
+		return err
+	}
 	a.migrateToSQLite()
 
 	a.browserMgr.InitData()
+	if err := check(); err != nil {
+		return err
+	}
 	if err := a.browserMgr.CleanupExpiredTrash(); err != nil {
 		logger.New("Browser").Error("启动清理回收站失败", logger.F("error", err))
+	}
+	if err := check(); err != nil {
+		return err
 	}
 	a.autoDetectCores()
 	a.loadProxies()
 	a.reconcileProfileProxyBindings()
+	return check()
 }
 
 func (a *App) startupInitLaunchCode(log *logger.Logger) {
@@ -169,9 +203,10 @@ func (a *App) startupInitLaunchCode(log *logger.Logger) {
 	a.browserMgr.CodeProvider = a.launchCodeSvc
 }
 
-func (a *App) startupInitLaunchServer(log *logger.Logger) {
+func (a *App) startupInitLaunchServer(log *logger.Logger) error {
 	port := a.config.LaunchServer.Port
 	a.launchServer = launchcode.NewLaunchServer(a.launchCodeSvc, a, a.browserMgr, port)
+	a.launchServer.SetIdentityAuthority(a.identity, a.scopedHTTP)
 	a.launchServer.SetAPIAuthConfig(launchcode.APIAuthConfig{
 		Enabled: a.config.LaunchServer.Auth.Enabled,
 		APIKey:  a.config.LaunchServer.Auth.APIKey,
@@ -179,18 +214,19 @@ func (a *App) startupInitLaunchServer(log *logger.Logger) {
 	})
 	if err := a.launchServer.Start(); err != nil {
 		log.Error("LaunchServer 启动失败", logger.F("error", err))
-		return
+		return err
 	}
 	log.Debug("LaunchServer 监听地址",
 		logger.F("url", fmt.Sprintf("http://127.0.0.1:%d", a.launchServer.Port())),
 		logger.F("preferred_port", port),
 	)
+	return nil
 }
 
 func (a *App) startupInitAutomation() {
 	a.automationMgr = automation.NewManager(a.appRoot, a.config, func(event string, payload any) {
 		a.emitRuntimeEvent(event, payload)
-	}, automation.Options{})
+	}, automation.Options{CaptureAdmission: a.captureAdmission})
 }
 
 func (a *App) startupInitBridgeHooks() {
@@ -236,6 +272,13 @@ func (a *App) ensureSpeedScheduler() {
 		a.speedScheduler = browser.NewProxySpeedScheduler(
 			a.browserMgr.ProxyDAO,
 			func(proxyId string) (bool, int64, string) {
+				check, err := a.currentAdmission()
+				if err != nil {
+					return false, 0, err.Error()
+				}
+				if err := check(); err != nil {
+					return false, 0, err.Error()
+				}
 				connectorType := config.NormalizeBrowserConnectorType(a.config.Browser.DefaultConnectorType)
 				r := a.testProxySpeedWithConnector(proxyId, a.getLatestProxies(), connectorType)
 				return r.Ok, r.LatencyMs, r.Error
@@ -243,6 +286,7 @@ func (a *App) ensureSpeedScheduler() {
 			browser.DefaultProxySpeedInterval,
 			browser.DefaultProxySpeedConcurrency,
 		)
+		a.speedScheduler.CaptureAdmission = a.captureAdmission
 	}
 	a.speedScheduler.Start()
 }

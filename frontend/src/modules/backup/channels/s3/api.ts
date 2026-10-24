@@ -1,3 +1,4 @@
+import { loadBusinessBridge } from '../../../../auth/loadBridge';
 import { normalizeBackupPackageInfo, type BackupPackageInfo } from '../../packageInfo'
 
 export interface S3Connection {
@@ -46,7 +47,7 @@ export const defaultS3Settings: S3Settings = {
 
 const getBindings = async () => {
   try {
-    return await import('../../../../wailsjs/go/main/App')
+    return await loadBusinessBridge()
   } catch {
     return null
   }

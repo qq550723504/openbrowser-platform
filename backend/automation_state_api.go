@@ -55,7 +55,7 @@ func (a *App) automationStatePayload() map[string]interface{} {
 	}
 
 	if a.automationMgr != nil {
-		state := a.automationMgr.CurrentState()
+		state := a.automationMgr.CurrentState(a.ctx)
 		status = map[string]interface{}{
 			"installed":          state.Installed,
 			"ready":              state.Ready,

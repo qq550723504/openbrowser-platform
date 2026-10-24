@@ -39,6 +39,9 @@ func (s *LaunchServer) launchBySelector(selector LaunchSelector, params LaunchRe
 }
 
 func (s *LaunchServer) launchProfile(profileID string, params LaunchRequestParams) (*browser.Profile, error) {
+	if err := s.checkAdmission(); err != nil {
+		return nil, err
+	}
 	if starterWithParams, ok := s.starter.(BrowserStarterWithParams); ok {
 		profile, err := starterWithParams.StartInstanceWithParams(profileID, params)
 		return normalizeLaunchedProfileRuntime(profile), err

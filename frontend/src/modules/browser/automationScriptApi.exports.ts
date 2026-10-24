@@ -1,3 +1,4 @@
+import { getBusinessApp } from '../../auth/session';
 import { exportAutomationScript, type AutomationScriptRecord } from "./automationScripts";
 import { getBindings, type AutomationScriptExportResult } from "./automationScriptApi.shared";
 
@@ -64,7 +65,7 @@ export async function exportAutomationScriptTemplate(
     );
   }
 
-  const goApp = (window as any).go?.main?.App;
+  const goApp = getBusinessApp();
   if (typeof goApp?.AutomationScriptExport === "function") {
     return normalizeAutomationScriptExportResult(
       await goApp.AutomationScriptExport(normalizedScriptId),
@@ -96,7 +97,7 @@ export async function exportAutomationScriptZip(
     );
   }
 
-  const goApp = (window as any).go?.main?.App;
+  const goApp = getBusinessApp();
   if (typeof goApp?.AutomationScriptExportZip === "function") {
     return normalizeAutomationScriptExportResult(
       await goApp.AutomationScriptExportZip(normalizedScriptId),
@@ -127,7 +128,7 @@ export async function exportAutomationScriptsBatchZip(
     );
   }
 
-  const goApp = (window as any).go?.main?.App;
+  const goApp = getBusinessApp();
   if (typeof goApp?.AutomationScriptExportBatchZip === "function") {
     return normalizeAutomationScriptExportResult(
       await goApp.AutomationScriptExportBatchZip(normalizedScriptIds),
@@ -156,7 +157,7 @@ export async function exportAutomationScriptDirectory(
     );
   }
 
-  const goApp = (window as any).go?.main?.App;
+  const goApp = getBusinessApp();
   if (typeof goApp?.AutomationScriptExportDirectory === "function") {
     return normalizeAutomationScriptExportResult(
       await goApp.AutomationScriptExportDirectory(normalizedScriptId),

@@ -41,7 +41,8 @@ var appRoot string
 var isDevMode bool
 
 type App struct {
-	*backend.App
+	*backend.AuthBoundApp
+	core *backend.App
 }
 
 type wailsBuildConfig struct {
@@ -77,63 +78,22 @@ func resolveBuildVersion() string {
 }
 
 func NewApp(appRoot, version string) *App {
-	return &App{App: backend.NewApp(appRoot, version)}
+	core := backend.NewApp(appRoot, version)
+	return &App{AuthBoundApp: backend.NewAuthBoundApp(core), core: core}
 }
 
+func desktopBindings(app *App) []interface{} { return []interface{}{app} }
+
 func (a *App) startup(ctx context.Context) {
-	backend.Start(a.App, ctx)
+	backend.Start(a.core, ctx)
 }
 
 func (a *App) shutdown(ctx context.Context) {
-	backend.Stop(a.App, ctx)
+	backend.Stop(a.core, ctx)
 }
 
 func (a *App) shouldBlockClose(ctx context.Context) bool {
-	return backend.ShouldBlockClose(a.App, ctx)
-}
-
-func (a *App) BrowserExtensionManualInstallGuide(query string) (backend.BrowserExtensionManualInstallGuide, error) {
-	return a.App.BrowserExtensionManualInstallGuide(query)
-}
-
-func (a *App) BrowserExtensionOpenManualDownloadDir() error {
-	return a.App.BrowserExtensionOpenManualDownloadDir()
-}
-
-func (a *App) BrowserExtensionListManualDownloadFiles() ([]backend.BrowserExtensionManualDownloadFile, error) {
-	return a.App.BrowserExtensionListManualDownloadFiles()
-}
-
-func (a *App) BrowserExtensionInstallManualDownloadFile(fileName string) (backend.BrowserExtension, error) {
-	return a.App.BrowserExtensionInstallManualDownloadFile(fileName)
-}
-
-func (a *App) BrowserProfilePackagePrepareImport() (backend.ProfilePackageImportPreview, error) {
-	return a.App.BrowserProfilePackagePrepareImport()
-}
-
-func (a *App) BrowserProfilePackagePrepareImportFromPath(zipPath string) (backend.ProfilePackageImportPreview, error) {
-	return a.App.BrowserProfilePackagePrepareImportFromPath(zipPath)
-}
-
-func (a *App) BrowserProfilePackageImportWithOptions(zipPath string, options backend.ProfilePackageImportOptions) (backend.ProfilePackageImportResult, error) {
-	return a.App.BrowserProfilePackageImportWithOptions(zipPath, options)
-}
-
-func (a *App) BackupGetLocalSettings() backend.BackupLocalSettings {
-	return a.App.BackupGetLocalSettings()
-}
-
-func (a *App) BackupSelectLocalDirectory() (backend.BackupSelectLocalDirectoryResult, error) {
-	return a.App.BackupSelectLocalDirectory()
-}
-
-func (a *App) BackupSaveLocalDirectory(directory string) (backend.BackupLocalSettings, error) {
-	return a.App.BackupSaveLocalDirectory(directory)
-}
-
-func (a *App) BackupListLocalBackups(directory string) ([]backend.BackupLocalHistoryItem, error) {
-	return a.App.BackupListLocalBackups(directory)
+	return backend.ShouldBlockClose(a.core, ctx)
 }
 
 func main() {
@@ -328,7 +288,7 @@ func main() {
 				},
 				OnQuit: func() {
 					lifecycle.Log(appRoot, "tray.quit", nil)
-					app.ForceQuit()
+					backend.QuitFromTray(app.core)
 				},
 				OnExit: func() {
 					lifecycle.Log(appRoot, "tray.exit", nil)
@@ -357,9 +317,7 @@ func main() {
 			lifecycle.Log(appRoot, "wails.on_before_close.result", map[string]interface{}{"blocked": blocked})
 			return blocked
 		},
-		Bind: []interface{}{
-			app,
-		},
+		Bind: desktopBindings(app),
 		Linux: &linux.Options{
 			// Expose a real window icon to Linux desktop environments.
 			Icon:             linuxAppIcon,

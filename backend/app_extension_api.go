@@ -69,6 +69,10 @@ func (a *App) BrowserExtensionInstall(query string) (BrowserExtension, error) {
 func (a *App) BrowserExtensionInstallWithProxy(input BrowserExtensionWebStoreRequest) (BrowserExtension, error) {
 	a.maintenanceMu.Lock()
 	defer a.maintenanceMu.Unlock()
+	if authErr := a.checkScopedAdmission(); authErr != nil {
+		var authZero0 BrowserExtension
+		return authZero0, authErr
+	}
 
 	if a.ctx == nil {
 		return BrowserExtension{}, fmt.Errorf("应用上下文未初始化")
@@ -149,6 +153,10 @@ func (a *App) BrowserExtensionListManualDownloadFiles() ([]BrowserExtensionManua
 func (a *App) BrowserExtensionInstallManualDownloadFile(fileName string) (BrowserExtension, error) {
 	a.maintenanceMu.Lock()
 	defer a.maintenanceMu.Unlock()
+	if authErr := a.checkScopedAdmission(); authErr != nil {
+		var authZero0 BrowserExtension
+		return authZero0, authErr
+	}
 
 	if a.browserMgr == nil {
 		return BrowserExtension{}, fmt.Errorf("浏览器管理器未初始化")
@@ -227,8 +235,14 @@ func proxyConfigLogPrefix(proxyConfig string) string {
 }
 
 func (a *App) BrowserExtensionInstallLocalFile() (BrowserExtension, error) {
+	dialogAuthCheck := a.captureAdmission()
+
 	a.maintenanceMu.Lock()
 	defer a.maintenanceMu.Unlock()
+	if authErr := a.checkScopedAdmission(); authErr != nil {
+		var authZero0 BrowserExtension
+		return authZero0, authErr
+	}
 
 	if a.ctx == nil {
 		return BrowserExtension{}, fmt.Errorf("应用上下文未初始化")
@@ -236,12 +250,17 @@ func (a *App) BrowserExtensionInstallLocalFile() (BrowserExtension, error) {
 	if a.browserMgr == nil {
 		return BrowserExtension{}, fmt.Errorf("浏览器管理器未初始化")
 	}
-	path, err := wailsruntime.OpenFileDialog(a.ctx, wailsruntime.OpenDialogOptions{
+	path, err := openNativeFileDialog(a.ctx, wailsruntime.OpenDialogOptions{
 		Title: "选择 Chrome 插件包",
 		Filters: []wailsruntime.FileFilter{
 			{DisplayName: "Chrome 插件包 (*.crx;*.zip)", Pattern: "*.crx;*.zip"},
 		},
 	})
+	if authErr := dialogAuthCheck(); authErr != nil {
+		var authZero0 BrowserExtension
+		return authZero0, authErr
+	}
+
 	if err != nil {
 		return BrowserExtension{}, fmt.Errorf("打开文件选择框失败: %w", err)
 	}
@@ -252,8 +271,14 @@ func (a *App) BrowserExtensionInstallLocalFile() (BrowserExtension, error) {
 }
 
 func (a *App) BrowserExtensionInstallLocalDirectory() (BrowserExtension, error) {
+	dialogAuthCheck := a.captureAdmission()
+
 	a.maintenanceMu.Lock()
 	defer a.maintenanceMu.Unlock()
+	if authErr := a.checkScopedAdmission(); authErr != nil {
+		var authZero0 BrowserExtension
+		return authZero0, authErr
+	}
 
 	if a.ctx == nil {
 		return BrowserExtension{}, fmt.Errorf("应用上下文未初始化")
@@ -261,7 +286,12 @@ func (a *App) BrowserExtensionInstallLocalDirectory() (BrowserExtension, error) 
 	if a.browserMgr == nil {
 		return BrowserExtension{}, fmt.Errorf("浏览器管理器未初始化")
 	}
-	path, err := wailsruntime.OpenDirectoryDialog(a.ctx, wailsruntime.OpenDialogOptions{Title: "选择已解压插件目录"})
+	path, err := openNativeDirectoryDialog(a.ctx, wailsruntime.OpenDialogOptions{Title: "选择已解压插件目录"})
+	if authErr := dialogAuthCheck(); authErr != nil {
+		var authZero0 BrowserExtension
+		return authZero0, authErr
+	}
+
 	if err != nil {
 		return BrowserExtension{}, fmt.Errorf("打开目录选择框失败: %w", err)
 	}
@@ -274,6 +304,10 @@ func (a *App) BrowserExtensionInstallLocalDirectory() (BrowserExtension, error) 
 func (a *App) BrowserExtensionSetEnabled(extensionID string, enabled bool) (BrowserExtension, error) {
 	a.maintenanceMu.Lock()
 	defer a.maintenanceMu.Unlock()
+	if authErr := a.checkScopedAdmission(); authErr != nil {
+		var authZero0 BrowserExtension
+		return authZero0, authErr
+	}
 
 	if a.browserMgr == nil || a.browserMgr.ExtensionDAO == nil {
 		return BrowserExtension{}, fmt.Errorf("插件管理器未初始化")
@@ -297,6 +331,10 @@ func (a *App) BrowserExtensionSetEnabled(extensionID string, enabled bool) (Brow
 func (a *App) BrowserExtensionSetDefaultInstall(extensionID string, enabled bool) (BrowserExtension, error) {
 	a.maintenanceMu.Lock()
 	defer a.maintenanceMu.Unlock()
+	if authErr := a.checkScopedAdmission(); authErr != nil {
+		var authZero0 BrowserExtension
+		return authZero0, authErr
+	}
 
 	if a.browserMgr == nil || a.browserMgr.ExtensionDAO == nil {
 		return BrowserExtension{}, fmt.Errorf("插件管理器未初始化")
@@ -313,6 +351,9 @@ func (a *App) BrowserExtensionSetDefaultInstall(extensionID string, enabled bool
 func (a *App) BrowserExtensionDelete(extensionID string) error {
 	a.maintenanceMu.Lock()
 	defer a.maintenanceMu.Unlock()
+	if authErr := a.checkScopedAdmission(); authErr != nil {
+		return authErr
+	}
 
 	if a.browserMgr == nil || a.browserMgr.ExtensionDAO == nil {
 		return fmt.Errorf("插件管理器未初始化")

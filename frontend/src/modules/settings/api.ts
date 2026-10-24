@@ -1,3 +1,4 @@
+import { loadBusinessBridge } from '../../auth/loadBridge';
 // Settings 模块 API
 import type { AppSettings } from './types'
 import { defaultSettings } from './types'
@@ -7,7 +8,7 @@ const SETTINGS_KEY = 'app_settings'
 
 const getBindings = async () => {
   try {
-    return await import('../../wailsjs/go/main/App')
+    return await loadBusinessBridge()
   } catch {
     return null
   }
